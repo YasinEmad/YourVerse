@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "Home",
+    "worlds": "Worlds",
+    "cart": "Cart",
+    "account": "Account"
+  },
+  "common": {
+    "loading": "Loading",
+    "addToCart": "Add to cart"
+  }
+}
