@@ -5,6 +5,8 @@ export const MIN_CONTRAST_RATIO = 4.5;
 export const PRODUCT_CARD_VARIANTS = ["repo", "character", "verse", "player", "loot", "square"] as const;
 export const MOTION_PROFILES = ["terminal", "neon-glitch", "ink", "stadium", "rgb-pixel", "marble"] as const;
 export const RADIUS_SCALES = ["sharp", "soft", "round"] as const;
+export const TEXT_COLOR_KEYS = ["textColor", "textMutedColor"] as const;
+export const BACKGROUND_KEYS = ["bg", "bgAlt", "surface"] as const;
 
 function toLinearChannel(value: number): number {
   const channel = value / 255;
@@ -106,19 +108,21 @@ export const worldConfigSchema = z
     nav: z.array(navLinkSchema).min(1),
   })
   .superRefine((world, ctx) => {
-    for (const colorName of ["textColor", "textMutedColor"] as const) {
-      const color = world.theme[colorName];
-      const bg = world.theme.colors.bg;
-      const ratio = contrastRatio(color, bg);
-      if (ratio < MIN_CONTRAST_RATIO) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["theme", colorName],
-          message:
-            `World "${world.slug}" ${colorName} (${color}) has ${ratio.toFixed(2)}:1 ` +
-            `contrast against its background (${bg}); needs >= ${MIN_CONTRAST_RATIO}:1 ` +
-            "(WCAG 2.1 AA) for normal text.",
-        });
+    for (const textColorKey of TEXT_COLOR_KEYS) {
+      const textColor = world.theme[textColorKey];
+      for (const bgColorKey of BACKGROUND_KEYS) {
+        const bgColor = world.theme.colors[bgColorKey];
+        const ratio = contrastRatio(textColor, bgColor);
+        if (ratio < MIN_CONTRAST_RATIO) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["theme", textColorKey],
+            message:
+              `${textColorKey} has contrast ratio ${ratio.toFixed(2)}:1 against ` +
+              `${bgColorKey}. Minimum required is ${MIN_CONTRAST_RATIO}:1 ` +
+              "(WCAG 2.1 AA) for normal text.",
+          });
+        }
       }
     }
   });

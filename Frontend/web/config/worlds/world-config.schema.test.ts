@@ -40,6 +40,37 @@ describe("worldConfigSchema", () => {
     expect(issue?.path.join(".")).toBe("theme.textColor");
     expect(issue?.message).toContain("WCAG 2.1 AA");
   });
+
+  it("checks every text color against every background surface", () => {
+    for (const config of worldConfigs) {
+      for (const textColorKey of ["textColor", "textMutedColor"] as const) {
+        for (const bgColorKey of ["bg", "bgAlt", "surface"] as const) {
+          const ratio = contrastRatio(config.theme[textColorKey], config.theme.colors[bgColorKey]);
+          expect(ratio, `${config.slug} ${textColorKey} on ${bgColorKey}`).toBeGreaterThanOrEqual(
+            MIN_CONTRAST_RATIO,
+          );
+        }
+      }
+    }
+  });
+
+  it("rejects a muted color that passes against bg but fails against surface", () => {
+    const invalid = {
+      ...techWorldConfig,
+      theme: {
+        ...techWorldConfig.theme,
+        textMutedColor: "#7E7E7E",
+      },
+    };
+    const result = worldConfigSchema.safeParse(invalid);
+    expect(result.success).toBe(false);
+    const issue = result.success
+      ? undefined
+      : result.error.issues.find((i) => i.path.join(".") === "theme.textMutedColor");
+    expect(issue).toBeDefined();
+    expect(issue?.message).toContain("against surface");
+    expect(issue?.message).toMatch(/contrast ratio \d+\.\d+:1/);
+  });
 });
 
 describe("contrast helpers", () => {

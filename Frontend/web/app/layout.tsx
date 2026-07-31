@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-body`}>
-        {/* Global providers (WorldProvider, CartProvider, LocaleProvider) mount here in Phase 2. */}
+        {/* Global providers (CartProvider, LocaleProvider) mount here in a later phase. */}
         {children}
       </body>
     </html>
