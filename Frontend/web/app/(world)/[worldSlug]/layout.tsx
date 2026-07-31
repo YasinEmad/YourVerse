@@ -1,11 +1,7 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { getAllWorldSlugs, getWorldConfig } from "@/config/worlds";
+import { getWorldConfig } from "@/config/worlds";
 import { WorldProvider } from "@/components/world/WorldProvider";
-
-export function generateStaticParams() {
-  return getAllWorldSlugs().map((worldSlug) => ({ worldSlug }));
-}
 
 export default function WorldLayout({
   children,

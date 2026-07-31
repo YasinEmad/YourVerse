@@ -27,6 +27,16 @@ export type WorldThemeVars = CSSProperties & {
   [key: `--world-${string}`]: string;
 };
 
+/**
+ * Maps a world theme to CSS custom properties.
+ *
+ * NOTE on light/dark detection: the `--world-color-scheme` property is derived
+ * purely from the configured background palette's luminance (`isLightColor`).
+ * It is an internal palette classification, NOT a user-facing light/dark mode
+ * toggle. It exists so browser-rendered chrome (scrollbars, form controls,
+ * `color-scheme`) matches each world's background. A user-controlled dark/light
+ * mode is intentionally out of scope for the WorldConfig schema (v1).
+ */
 export function applyWorldTheme(theme: WorldTheme): WorldThemeVars {
   return {
     "--world-bg": theme.colors.bg,
