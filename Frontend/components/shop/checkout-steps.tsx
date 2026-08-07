@@ -14,14 +14,14 @@ export interface CheckoutStepProps {
 
 export interface CheckoutStepConfig {
   id: string;
-  label: string;
+  labelKey: string;
   component: ComponentType<CheckoutStepProps>;
 }
 
 export const checkoutSteps: CheckoutStepConfig[] = [
-  { id: "shipping", label: "Shipping", component: ShippingStep },
-  { id: "payment", label: "Payment", component: PaymentStep },
-  { id: "review", label: "Review", component: ReviewStep },
+  { id: "shipping", labelKey: "checkout.steps.shipping", component: ShippingStep },
+  { id: "payment", labelKey: "checkout.steps.payment", component: PaymentStep },
+  { id: "review", labelKey: "checkout.steps.review", component: ReviewStep },
 ];
 
 export function getCheckoutStep(id: string): CheckoutStepConfig | undefined {

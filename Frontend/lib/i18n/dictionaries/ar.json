@@ -1,12 +1,187 @@
 {
+  "a11y": {
+    "skipToContent": "تخطَّ إلى المحتوى",
+    "close": "إغلاق",
+    "openCart": "فتح السلة",
+    "cartItemCount": "السلة، {count} عنصر",
+    "decreaseQuantity": "تقليل الكمية",
+    "increaseQuantity": "زيادة الكمية",
+    "quantityLabel": "الكمية {qty}"
+  },
   "nav": {
     "home": "الرئيسية",
     "worlds": "العوالم",
     "cart": "السلة",
-    "account": "الحساب"
+    "account": "الحساب",
+    "storeNavigation": "تنقّل المتجر"
   },
   "common": {
     "loading": "جارٍ التحميل",
-    "addToCart": "أضف إلى السلة"
+    "addToCart": "أضف إلى السلة",
+    "continue": "متابعة",
+    "back": "رجوع",
+    "free": "مجاني",
+    "each": "للقطعة",
+    "remove": "إزالة",
+    "required": "مطلوب",
+    "unexpectedError": "حدث خطأ ما. حاول مرة أخرى."
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "loading": "جارٍ تحميل سلّتك…",
+    "empty": "سلّتك فارغة.",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "tax": "الضريبة",
+    "total": "الإجمالي",
+    "viewCart": "عرض السلة",
+    "checkout": "إتمام الشراء",
+    "browseWorlds": "تصفّح العوالم",
+    "proceedToCheckout": "المتابعة إلى الدفع",
+    "summaryTitle": "ملخص الطلب"
+  },
+  "checkout": {
+    "title": "إتمام الشراء",
+    "backToCart": "العودة إلى السلة",
+    "emptyCart": "سلّتك فارغة.",
+    "loading": "جارٍ تحميل سلّتك…",
+    "steps": {
+      "shipping": "الشحن",
+      "payment": "الدفع",
+      "review": "المراجعة"
+    },
+    "shippingTitle": "بيانات الشحن",
+    "shippingFields": {
+      "fullName": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "phoneOptional": "الهاتف (اختياري)",
+      "line1": "العنوان — السطر الأول",
+      "line2Optional": "العنوان — السطر الثاني (اختياري)",
+      "city": "المدينة",
+      "regionOptional": "المنطقة (اختياري)",
+      "postalCodeOptional": "الرمز البريدي (اختياري)",
+      "country": "الدولة"
+    },
+    "paymentTitle": "طريقة الدفع",
+    "reviewTitle": "مراجعة طلبك",
+    "placeOrder": "تأكيد الطلب",
+    "placingOrder": "جارٍ تأكيد الطلب…",
+    "orderConfirmed": "تم تأكيد الطلب",
+    "orderNumber": "الطلب {number}",
+    "items": "المنتجات",
+    "totals": "الإجماليات",
+    "delivery": "التوصيل",
+    "shipTo": "الشحن إلى",
+    "email": "البريد الإلكتروني",
+    "payment": "الدفع",
+    "placed": "تاريخ الطلب",
+    "continueShopping": "مواصلة التسوق",
+    "requiredField": "مطلوب",
+    "invalidEmail": "أدخل بريدًا إلكترونيًا صحيحًا"
+  },
+  "payment": {
+    "methodLabel": "طريقة الدفع",
+    "card": "بطاقة",
+    "cardDescription": "ادفع ببطاقة ائتمان أو خصم.",
+    "cardNumber": "رقم البطاقة",
+    "expiry": "تاريخ الانتهاء",
+    "cvc": "رمز CVC",
+    "wallet": "محفظة",
+    "walletDescription": "ادفع من رصيد محفظتك في المتجر.",
+    "walletEmail": "بريد المحفظة",
+    "cod": "الدفع عند الاستلام",
+    "codDescription": "ادفع عند وصول طلبك.",
+    "codNote": "ادفع نقدًا عند وصول طلبك."
+  },
+  "auth": {
+    "loginTitle": "تسجيل الدخول",
+    "registerTitle": "إنشاء حساب",
+    "name": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء الحساب",
+    "noAccount": "ليس لديك حساب؟",
+    "haveAccount": "لديك حساب بالفعل؟",
+    "createOne": "أنشئ حسابًا",
+    "signInInstead": "سجّل دخولك",
+    "backToStore": "العودة إلى المتجر",
+    "requiredField": "مطلوب",
+    "invalidEmail": "أدخل بريدًا إلكترونيًا صحيحًا",
+    "nameRequired": "الاسم مطلوب",
+    "passwordMin": "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+    "authUnavailable": "المصادقة غير متاحة بعد. هذا النموذج جاهز للاتصال بخدمة المصادقة عندما تتوفر.",
+    "unexpectedError": "حدث خطأ ما. حاول مرة أخرى."
+  },
+  "account": {
+    "title": "الحساب",
+    "welcome": "مرحبًا، {name}",
+    "email": "البريد الإلكتروني",
+    "memberSince": "عضو منذ",
+    "favoriteWorld": "العالم المفضل",
+    "overview": "نظرة عامة",
+    "orders": "الطلبات",
+    "achievements": "الإنجازات",
+    "recentAchievements": "أحدث الإنجازات",
+    "viewAllOrders": "عرض كل الطلبات",
+    "signOut": "تسجيل الخروج"
+  },
+  "orders": {
+    "title": "الطلبات",
+    "empty": "لم تضع أي طلبات بعد.",
+    "orderNumber": "الطلب {number}",
+    "placedOn": "تاريخ الطلب: {date}",
+    "status": "الحالة",
+    "total": "الإجمالي",
+    "viewOrder": "عرض الطلب",
+    "backToOrders": "العودة إلى الطلبات",
+    "backToAccount": "العودة إلى الحساب",
+    "items": "المنتجات",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "tax": "الضريبة",
+    "delivery": "التوصيل",
+    "shipTo": "الشحن إلى",
+    "email": "البريد الإلكتروني",
+    "payment": "الدفع",
+    "free": "مجاني",
+    "statuses": {
+      "pending": "قيد الانتظار",
+      "paid": "مدفوع",
+      "completed": "مكتمل",
+      "cancelled": "ملغي",
+      "refunded": "مسترد"
+    }
+  },
+  "achievements": {
+    "title": "الإنجازات",
+    "empty": "لم تحقق أي إنجازات بعد.",
+    "locked": "مقفل",
+    "unlockedOn": "تم إطلاقه في {date}",
+    "items": {
+      "first-order": {
+        "title": "أول طلب",
+        "description": "ضع طلبك الأول."
+      },
+      "collector": {
+        "title": "جامع",
+        "description": "اقتنِ منتجات من ثلاثة عوالم."
+      },
+      "vip": {
+        "title": "VIP",
+        "description": "بلّغ أعلى مستوى ولاء."
+      }
+    }
+  },
+  "loyalty": {
+    "title": "الولاء",
+    "points": "{points} نقطة",
+    "pointsToNext": "{points} نقطة إلى {tier}",
+    "maxTier": "لقد بلغت أعلى مستوى.",
+    "tiers": {
+      "bronze": "برونزي",
+      "silver": "فضي",
+      "gold": "ذهبي"
+    }
   }
 }

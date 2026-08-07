@@ -11,8 +11,8 @@ export interface PaymentFormProps {
 
 export interface PaymentMethodDescriptor {
   id: string;
-  label: string;
-  description?: string;
+  labelKey: string;
+  descriptionKey?: string;
   requiredFields: string[];
   icon: ReactNode;
   form: ComponentType<PaymentFormProps>;
@@ -21,24 +21,24 @@ export interface PaymentMethodDescriptor {
 export const paymentMethods: PaymentMethodDescriptor[] = [
   {
     id: "card",
-    label: "Card",
-    description: "Pay with a credit or debit card.",
+    labelKey: "payment.card",
+    descriptionKey: "payment.cardDescription",
     requiredFields: ["card.number", "card.expiry", "card.cvc"],
     icon: <CardGlyph />,
     form: CardForm,
   },
   {
     id: "wallet",
-    label: "Wallet",
-    description: "Pay from your store wallet balance.",
+    labelKey: "payment.wallet",
+    descriptionKey: "payment.walletDescription",
     requiredFields: ["wallet.email"],
     icon: <WalletGlyph />,
     form: WalletForm,
   },
   {
     id: "cod",
-    label: "Cash on delivery",
-    description: "Pay when your order arrives.",
+    labelKey: "payment.cod",
+    descriptionKey: "payment.codDescription",
     requiredFields: [],
     icon: <CashGlyph />,
     form: CodForm,

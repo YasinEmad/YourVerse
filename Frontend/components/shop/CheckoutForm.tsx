@@ -6,10 +6,12 @@ import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import { createOrder } from "@/lib/api/orders";
 import type { AddressDto, CreateOrderRequestDto } from "@/lib/api/types";
+import { useI18n } from "@/lib/i18n/locale-provider";
 import { checkoutSteps } from "./checkout-steps";
 import { CheckoutSteps } from "./CheckoutSteps";
 
 export function CheckoutForm() {
+  const { t } = useI18n();
   const router = useRouter();
   const { cart, status, refresh } = useCart();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -21,7 +23,7 @@ export function CheckoutForm() {
 
   const handleSubmit = async () => {
     if (cart.items.length === 0) {
-      setError("Your cart is empty.");
+      setError(t("checkout.emptyCart"));
       return;
     }
     setSubmitting(true);
@@ -47,7 +49,9 @@ export function CheckoutForm() {
       await refresh();
       router.push(`/checkout/confirmation/${order.id}`);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Something went wrong placing your order.");
+      setError(
+        caught instanceof Error ? caught.message : t("common.unexpectedError"),
+      );
       setSubmitting(false);
     }
   };
@@ -61,16 +65,16 @@ export function CheckoutForm() {
   };
 
   if (status === "idle" || status === "loading") {
-    return <p className="shop-loading">Loading your cart…</p>;
+    return <p className="shop-loading">{t("checkout.loading")}</p>;
   }
 
   if (cart.items.length === 0) {
     return (
       <div className="shop-page__inner">
-        <h1 className="shop-page__title">Checkout</h1>
-        <p className="shop-empty">Your cart is empty.</p>
+        <h1 className="shop-page__title">{t("checkout.title")}</h1>
+        <p className="shop-empty">{t("checkout.emptyCart")}</p>
         <Link href="/cart" className="world-button">
-          Back to cart
+          {t("checkout.backToCart")}
         </Link>
       </div>
     );
@@ -78,7 +82,7 @@ export function CheckoutForm() {
 
   return (
     <div className="shop-page__inner">
-      <h1 className="shop-page__title">Checkout</h1>
+      <h1 className="shop-page__title">{t("checkout.title")}</h1>
       <CheckoutSteps
         steps={checkoutSteps}
         activeIndex={activeIndex}

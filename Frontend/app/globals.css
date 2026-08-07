@@ -31,6 +31,28 @@
     background-color: rgba(255, 255, 255, 0.2);
   }
 
+  :focus-visible {
+    outline: 2px solid var(--world-primary, var(--base-text));
+    outline-offset: 2px;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: 0;
+    inset-inline-start: var(--space-4);
+    z-index: var(--z-overlay);
+    padding: var(--space-2) var(--space-4);
+    border-radius: 0 0 var(--space-2) var(--space-2);
+    background-color: var(--base-bg);
+    color: var(--base-text);
+    text-decoration: none;
+    transform: translateY(-120%);
+  }
+
+  .skip-link:focus-visible {
+    transform: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -39,6 +61,15 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+
+  [data-low-motion="true"] *,
+  [data-low-motion="true"] *::before,
+  [data-low-motion="true"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -278,7 +309,7 @@
   .world-card--character .world-card__rank {
     position: absolute;
     top: var(--space-2);
-    right: var(--space-2);
+    inset-inline-end: var(--space-2);
     padding: var(--space-1) var(--space-2);
     border-radius: var(--world-radius);
     background-color: var(--world-accent);
@@ -361,7 +392,7 @@
   .world-card--loot .world-card__rarity {
     position: absolute;
     bottom: var(--space-2);
-    left: var(--space-2);
+    inset-inline-start: var(--space-2);
     padding: var(--space-1) var(--space-2);
     border-radius: var(--world-radius);
     background-color: color-mix(in srgb, var(--card-accent, var(--world-primary)) 22%, transparent);
@@ -505,7 +536,7 @@
 
   .world-motion--terminal {
     justify-items: start;
-    padding-left: var(--space-8);
+    padding-inline-start: var(--space-8);
     color: var(--world-primary);
     font-family: var(--world-font-mono);
     font-size: var(--text-sm);
@@ -618,7 +649,8 @@
 
   /* ---- Shop (shared, world-neutral: ambient --world-* vars only) ---- */
 
-  .shop-root {
+  .shop-root,
+  .auth-main {
     --world-bg: #0a0b0d;
     --world-bg-alt: #111318;
     --world-surface: #171a20;
@@ -629,11 +661,14 @@
     --world-text-muted: #8a8f98;
     --world-radius: 8px;
     --world-color-scheme: dark;
-    min-height: 100dvh;
     background-color: var(--world-bg);
     color: var(--world-text);
     color-scheme: var(--world-color-scheme, dark);
     font-family: var(--font-body, ui-sans-serif, system-ui, sans-serif);
+  }
+
+  .shop-root {
+    min-height: 100dvh;
   }
 
   .shop-header {
@@ -650,7 +685,7 @@
   }
 
   .shop-header__brand {
-    margin-right: auto;
+    margin-inline-end: auto;
     color: var(--world-text);
     font-family: var(--font-heading, var(--font-body));
     font-weight: 700;
@@ -696,7 +731,7 @@
   .shop-cart-button__count {
     position: absolute;
     top: -0.4rem;
-    right: -0.4rem;
+    inset-inline-end: -0.4rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -864,7 +899,7 @@
     color: var(--world-text);
     font-family: var(--font-mono, ui-monospace, monospace);
     font-size: var(--text-sm);
-    text-align: right;
+    text-align: end;
   }
 
   .shop-grid {
@@ -1098,7 +1133,7 @@
     width: min(100%, 26rem);
     height: 100%;
     background-color: var(--world-bg);
-    border-left: 1px solid var(--world-border);
+    border-inline-start: 1px solid var(--world-border);
     box-shadow: 0 0 2rem rgba(0, 0, 0, 0.4);
   }
 
@@ -1218,7 +1253,7 @@
     border-radius: var(--world-radius);
     background-color: var(--world-surface);
     color: var(--world-text);
-    text-align: left;
+    text-align: start;
     cursor: pointer;
   }
 
@@ -1332,6 +1367,300 @@
     font-size: var(--text-lg);
   }
 
+  /* ---- Auth ---- */
+
+  .auth-main {
+    display: grid;
+    place-items: center;
+    min-height: 100dvh;
+    padding: var(--space-8) var(--space-6);
+  }
+
+  .auth-card {
+    display: grid;
+    gap: var(--space-6);
+    width: 100%;
+    max-width: 26rem;
+    padding: var(--space-8);
+    border: 1px solid var(--world-border);
+    border-radius: var(--world-radius);
+    background-color: var(--world-surface);
+  }
+
+  .auth-card__title {
+    margin: 0;
+    color: var(--world-text);
+    font-family: var(--font-heading, var(--font-body));
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+  }
+
+  .auth-form {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .auth-form__submit {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .auth-link-row {
+    margin: 0;
+    color: var(--world-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .auth-link {
+    color: var(--world-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .auth-link:hover {
+    color: var(--world-primary);
+  }
+
+  /* ---- Account ---- */
+
+  .account-panel {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    border: 1px solid var(--world-border);
+    border-radius: var(--world-radius);
+    background-color: var(--world-surface);
+  }
+
+  .account-panel__name {
+    margin: 0;
+    color: var(--world-text);
+    font-family: var(--font-heading, var(--font-body));
+    font-size: var(--text-2xl);
+    line-height: var(--leading-snug);
+  }
+
+  .account-meta {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+  }
+
+  .account-meta div {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .account-meta dt {
+    color: var(--world-text-muted);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .account-meta dd {
+    margin: 0;
+    color: var(--world-text);
+    font-size: var(--text-sm);
+  }
+
+  .account-section {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-10);
+  }
+
+  .account-section__title {
+    margin: 0;
+    color: var(--world-text);
+    font-family: var(--font-heading, var(--font-body));
+    font-size: var(--text-lg);
+  }
+
+  .account-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-10);
+  }
+
+  .account-nav__link,
+  .account-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--world-border);
+    border-radius: var(--world-radius);
+    background-color: transparent;
+    color: var(--world-text-muted);
+    font: inherit;
+    font-size: var(--text-sm);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .account-nav__link:hover {
+    border-color: var(--world-primary);
+    color: var(--world-text);
+  }
+
+  .account-back-link {
+    margin-top: var(--space-8);
+  }
+
+  .account-back-link:hover {
+    border-color: var(--world-primary);
+    color: var(--world-text);
+  }
+
+  .order-list {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .order-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--world-border);
+    border-radius: var(--world-radius);
+    background-color: var(--world-surface);
+  }
+
+  .order-card__main {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .order-card__number {
+    margin: 0;
+    color: var(--world-text);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: var(--text-base);
+  }
+
+  .order-card__meta {
+    margin: 0;
+    color: var(--world-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .order-card__aside {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .order-card__total {
+    margin: 0;
+    color: var(--world-text);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: var(--text-sm);
+  }
+
+  .achievement-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .achievement-card {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px solid var(--world-border);
+    border-radius: var(--world-radius);
+    background-color: var(--world-surface);
+  }
+
+  .achievement-card.is-locked {
+    opacity: 0.55;
+  }
+
+  .achievement-card__icon {
+    color: var(--world-accent);
+    font-size: var(--text-3xl);
+    line-height: 1;
+  }
+
+  .achievement-card__title {
+    margin: 0;
+    color: var(--world-text);
+    font-family: var(--font-heading, var(--font-body));
+    font-size: var(--text-base);
+  }
+
+  .achievement-card__description {
+    margin: 0;
+    color: var(--world-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .achievement-card__meta {
+    margin: 0;
+    color: var(--world-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .loyalty-bar {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 1px solid var(--world-border);
+    border-radius: var(--world-radius);
+    background-color: var(--world-surface);
+  }
+
+  .loyalty-bar__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .loyalty-bar__tier {
+    color: var(--world-text);
+    font-family: var(--font-heading, var(--font-body));
+    font-size: var(--text-base);
+    font-weight: 700;
+  }
+
+  .loyalty-bar__points {
+    color: var(--world-text-muted);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: var(--text-sm);
+  }
+
+  .loyalty-bar__track {
+    height: 0.625rem;
+    overflow: hidden;
+    border-radius: 9999px;
+    background-color: var(--world-border);
+  }
+
+  .loyalty-bar__fill {
+    height: 100%;
+    border-radius: 9999px;
+    background-color: var(--world-primary);
+  }
+
+  .loyalty-bar__hint {
+    margin: 0;
+    color: var(--world-text-muted);
+    font-size: var(--text-xs);
+  }
+
   @media (max-width: 48rem) {
     .shop-cart {
       grid-template-columns: 1fr;
@@ -1342,7 +1671,7 @@
     }
 
     .shop-line-item__total {
-      text-align: left;
+      text-align: start;
     }
   }
 }

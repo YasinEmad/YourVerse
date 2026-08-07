@@ -6,8 +6,10 @@ import type { CheckoutStepProps } from "../checkout-steps";
 import { useCart } from "@/hooks/useCart";
 import { OrderSummary } from "../OrderSummary";
 import { getPaymentMethod } from "../payment-methods";
+import { useI18n } from "@/lib/i18n/locale-provider";
 
 export function ReviewStep({ value, onSubmit, isSubmitting }: CheckoutStepProps) {
+  const { t } = useI18n();
   const { cart } = useCart();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const method = getPaymentMethod(value.paymentMethodId ?? "");
@@ -27,10 +29,10 @@ export function ReviewStep({ value, onSubmit, isSubmitting }: CheckoutStepProps)
   const handleSubmit = () => {
     const nextErrors: Record<string, string> = {};
     if (cart.items.length === 0) {
-      nextErrors.cart = "Your cart is empty.";
+      nextErrors.cart = t("checkout.emptyCart");
     }
     if (!value.email?.trim()) {
-      nextErrors.email = "Required";
+      nextErrors.email = t("checkout.requiredField");
     }
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length === 0) {
@@ -41,10 +43,10 @@ export function ReviewStep({ value, onSubmit, isSubmitting }: CheckoutStepProps)
   if (cart.items.length === 0) {
     return (
       <div className="shop-step">
-        <h2 className="shop-step__title">Review your order</h2>
-        <p className="shop-empty">Your cart is empty.</p>
+        <h2 className="shop-step__title">{t("checkout.reviewTitle")}</h2>
+        <p className="shop-empty">{t("checkout.emptyCart")}</p>
         <Link href="/cart" className="world-button">
-          Back to cart
+          {t("checkout.backToCart")}
         </Link>
       </div>
     );
@@ -52,13 +54,13 @@ export function ReviewStep({ value, onSubmit, isSubmitting }: CheckoutStepProps)
 
   return (
     <div className="shop-step">
-      <h2 className="shop-step__title">Review your order</h2>
+      <h2 className="shop-step__title">{t("checkout.reviewTitle")}</h2>
       {errors.cart ? <p className="shop-error" role="alert">{errors.cart}</p> : null}
       <div className="shop-review">
         <OrderSummary items={cart.items} currency={cart.currency} />
         <dl className="shop-meta">
           <div>
-            <dt>Ship to</dt>
+            <dt>{t("checkout.shipTo")}</dt>
             <dd>
               {shippingAddress.fullName} · {shippingAddress.line1}
               {shippingAddress.line2 ? `, ${shippingAddress.line2}` : ""}, {shippingAddress.city},{" "}
@@ -67,8 +69,8 @@ export function ReviewStep({ value, onSubmit, isSubmitting }: CheckoutStepProps)
             </dd>
           </div>
           <div>
-            <dt>Payment</dt>
-            <dd>{method?.label ?? value.paymentMethodId ?? "—"}</dd>
+            <dt>{t("checkout.payment")}</dt>
+            <dd>{method ? t(method.labelKey) : value.paymentMethodId ?? "—"}</dd>
           </div>
         </dl>
         {errors.email ? <p className="shop-error" role="alert">{errors.email}</p> : null}
@@ -79,7 +81,7 @@ export function ReviewStep({ value, onSubmit, isSubmitting }: CheckoutStepProps)
         disabled={isSubmitting}
         onClick={handleSubmit}
       >
-        {isSubmitting ? "Placing order…" : "Place order"}
+        {isSubmitting ? t("checkout.placingOrder") : t("checkout.placeOrder")}
       </button>
     </div>
   );

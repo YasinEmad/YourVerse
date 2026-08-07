@@ -1,12 +1,187 @@
 {
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "close": "Close",
+    "openCart": "Open cart",
+    "cartItemCount": "Cart, {count} items",
+    "decreaseQuantity": "Decrease quantity",
+    "increaseQuantity": "Increase quantity",
+    "quantityLabel": "Quantity {qty}"
+  },
   "nav": {
     "home": "Home",
     "worlds": "Worlds",
     "cart": "Cart",
-    "account": "Account"
+    "account": "Account",
+    "storeNavigation": "Store navigation"
   },
   "common": {
     "loading": "Loading",
-    "addToCart": "Add to cart"
+    "addToCart": "Add to cart",
+    "continue": "Continue",
+    "back": "Back",
+    "free": "Free",
+    "each": "each",
+    "remove": "Remove",
+    "required": "Required",
+    "unexpectedError": "Something went wrong. Please try again."
+  },
+  "cart": {
+    "title": "Your cart",
+    "loading": "Loading your cart…",
+    "empty": "Your cart is empty.",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "total": "Total",
+    "viewCart": "View cart",
+    "checkout": "Checkout",
+    "browseWorlds": "Browse worlds",
+    "proceedToCheckout": "Proceed to checkout",
+    "summaryTitle": "Order summary"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "backToCart": "Back to cart",
+    "emptyCart": "Your cart is empty.",
+    "loading": "Loading your cart…",
+    "steps": {
+      "shipping": "Shipping",
+      "payment": "Payment",
+      "review": "Review"
+    },
+    "shippingTitle": "Shipping details",
+    "shippingFields": {
+      "fullName": "Full name",
+      "email": "Email",
+      "phoneOptional": "Phone (optional)",
+      "line1": "Address line 1",
+      "line2Optional": "Address line 2 (optional)",
+      "city": "City",
+      "regionOptional": "Region (optional)",
+      "postalCodeOptional": "Postal code (optional)",
+      "country": "Country"
+    },
+    "paymentTitle": "Payment method",
+    "reviewTitle": "Review your order",
+    "placeOrder": "Place order",
+    "placingOrder": "Placing order…",
+    "orderConfirmed": "Order confirmed",
+    "orderNumber": "Order {number}",
+    "items": "Items",
+    "totals": "Totals",
+    "delivery": "Delivery",
+    "shipTo": "Ship to",
+    "email": "Email",
+    "payment": "Payment",
+    "placed": "Placed",
+    "continueShopping": "Continue shopping",
+    "requiredField": "Required",
+    "invalidEmail": "Enter a valid email address"
+  },
+  "payment": {
+    "methodLabel": "Payment method",
+    "card": "Card",
+    "cardDescription": "Pay with a credit or debit card.",
+    "cardNumber": "Card number",
+    "expiry": "Expiry",
+    "cvc": "CVC",
+    "wallet": "Wallet",
+    "walletDescription": "Pay from your store wallet balance.",
+    "walletEmail": "Wallet email",
+    "cod": "Cash on delivery",
+    "codDescription": "Pay when your order arrives.",
+    "codNote": "Pay in cash when your order is delivered."
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "registerTitle": "Create an account",
+    "name": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "login": "Sign in",
+    "register": "Create account",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "createOne": "Create one",
+    "signInInstead": "Sign in instead",
+    "backToStore": "Back to store",
+    "requiredField": "Required",
+    "invalidEmail": "Enter a valid email address",
+    "nameRequired": "Name is required",
+    "passwordMin": "Password must be at least 8 characters",
+    "authUnavailable": "Authentication is not available yet. This form is ready to connect to the authentication service when it ships.",
+    "unexpectedError": "Something went wrong. Please try again."
+  },
+  "account": {
+    "title": "Account",
+    "welcome": "Welcome, {name}",
+    "email": "Email",
+    "memberSince": "Member since",
+    "favoriteWorld": "Favorite world",
+    "overview": "Overview",
+    "orders": "Orders",
+    "achievements": "Achievements",
+    "recentAchievements": "Recent achievements",
+    "viewAllOrders": "View all orders",
+    "signOut": "Sign out"
+  },
+  "orders": {
+    "title": "Orders",
+    "empty": "You haven't placed any orders yet.",
+    "orderNumber": "Order {number}",
+    "placedOn": "Placed on {date}",
+    "status": "Status",
+    "total": "Total",
+    "viewOrder": "View order",
+    "backToOrders": "Back to orders",
+    "backToAccount": "Back to account",
+    "items": "Items",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "delivery": "Delivery",
+    "shipTo": "Ship to",
+    "email": "Email",
+    "payment": "Payment",
+    "free": "Free",
+    "statuses": {
+      "pending": "Pending",
+      "paid": "Paid",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    }
+  },
+  "achievements": {
+    "title": "Achievements",
+    "empty": "No achievements earned yet.",
+    "locked": "Locked",
+    "unlockedOn": "Unlocked on {date}",
+    "items": {
+      "first-order": {
+        "title": "First Order",
+        "description": "Place your first order."
+      },
+      "collector": {
+        "title": "Collector",
+        "description": "Own items from three worlds."
+      },
+      "vip": {
+        "title": "VIP",
+        "description": "Reach the gold loyalty tier."
+      }
+    }
+  },
+  "loyalty": {
+    "title": "Loyalty",
+    "points": "{points} points",
+    "pointsToNext": "{points} points to {tier}",
+    "maxTier": "You have reached the highest tier.",
+    "tiers": {
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold"
+    }
   }
 }

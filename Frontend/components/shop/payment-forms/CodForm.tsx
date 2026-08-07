@@ -1,5 +1,9 @@
+"use client";
+
 import type { PaymentFormProps } from "../payment-methods";
+import { useI18n } from "@/lib/i18n/locale-provider";
 
 export function CodForm(_props: PaymentFormProps) {
-  return <p className="shop-note">Pay in cash when your order is delivered.</p>;
+  const { t } = useI18n();
+  return <p className="shop-note">{t("payment.codNote")}</p>;
 }

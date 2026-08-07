@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { SESSION_HEADER_NAME } from "@/lib/api/client";
-import type { CreateOrderRequestDto, OrderDto } from "@/lib/api/types";
+import type { CreateOrderRequestDto, OrderDto, OrderListResponseDto } from "@/lib/api/types";
 import { KNOWN_PAYMENT_METHOD_IDS } from "@/components/shop/payment-methods";
-import { createOrder, MockOrderError } from "./order-repository";
+import { createOrder, getOrdersForSession, MockOrderError } from "./order-repository";
+
+export function GET(
+  request: NextRequest,
+): NextResponse<OrderListResponseDto | { error: string }> {
+  const sessionId = request.headers.get(SESSION_HEADER_NAME);
+  if (!sessionId) {
+    return NextResponse.json({ error: "Missing session" }, { status: 400 });
+  }
+  return NextResponse.json({ items: getOrdersForSession(sessionId) });
+}
 
 export async function POST(
   request: NextRequest,

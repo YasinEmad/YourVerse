@@ -4,7 +4,7 @@ export interface FormFieldProps {
   value: string;
   error?: string;
   onChange: (value: string) => void;
-  type?: "text" | "email" | "tel";
+  type?: "text" | "email" | "tel" | "password";
   autoComplete?: string;
   placeholder?: string;
 }

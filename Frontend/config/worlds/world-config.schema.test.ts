@@ -7,6 +7,7 @@ import {
   worldConfigSchema,
 } from "./world-config.schema";
 import { techWorldConfig } from "./tech.config";
+import { poetryWorldConfig } from "./poetry.config";
 
 describe("worldConfigSchema", () => {
   it("validates all six world configs against the schema", () => {
@@ -52,6 +53,21 @@ describe("worldConfigSchema", () => {
         }
       }
     }
+  });
+
+  it("rejects a deliberately invalid RTL-first world config", () => {
+    const invalid = {
+      ...poetryWorldConfig,
+      theme: {
+        ...poetryWorldConfig.theme,
+        textColor: poetryWorldConfig.theme.colors.bg,
+      },
+    };
+    const result = worldConfigSchema.safeParse(invalid);
+    expect(result.success).toBe(false);
+    const issue = result.success ? undefined : result.error.issues[0];
+    expect(issue?.path.join(".")).toBe("theme.textColor");
+    expect(issue?.message).toContain("WCAG 2.1 AA");
   });
 
   it("rejects a muted color that passes against bg but fails against surface", () => {

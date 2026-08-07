@@ -1,13 +1,17 @@
+"use client";
+
 import type { PaymentFormProps } from "../payment-methods";
 import { FormField } from "../FormField";
+import { useI18n } from "@/lib/i18n/locale-provider";
 
 export function CardForm({ value, onChange, errors }: PaymentFormProps) {
+  const { t } = useI18n();
   const setField = (key: string, next: string) => onChange({ ...value, [key]: next });
 
   return (
     <div className="shop-grid">
       <FormField
-        label="Card number"
+        label={t("payment.cardNumber")}
         name="card.number"
         value={value["card.number"] ?? ""}
         error={errors?.["card.number"]}
@@ -16,7 +20,7 @@ export function CardForm({ value, onChange, errors }: PaymentFormProps) {
         placeholder="4242 4242 4242 4242"
       />
       <FormField
-        label="Expiry"
+        label={t("payment.expiry")}
         name="card.expiry"
         value={value["card.expiry"] ?? ""}
         error={errors?.["card.expiry"]}
@@ -25,7 +29,7 @@ export function CardForm({ value, onChange, errors }: PaymentFormProps) {
         placeholder="MM/YY"
       />
       <FormField
-        label="CVC"
+        label={t("payment.cvc")}
         name="card.cvc"
         value={value["card.cvc"] ?? ""}
         error={errors?.["card.cvc"]}

@@ -19,7 +19,7 @@ export default async function ProductPage({
   return (
     <>
       <WorldNav />
-      <main>
+      <main id="main-content">
         <ProductDetail product={product} />
       </main>
     </>

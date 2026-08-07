@@ -13,7 +13,7 @@ export default function ShopLayout({ children }: { children: ReactNode }) {
   return (
     <div className="shop-root">
       <ShopHeader />
-      <main className="shop-main">{children}</main>
+      <main id="main-content" className="shop-main">{children}</main>
     </div>
   );
 }

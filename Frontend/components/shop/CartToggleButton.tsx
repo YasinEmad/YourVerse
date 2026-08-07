@@ -1,8 +1,10 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
+import { useI18n } from "@/lib/i18n/locale-provider";
 
 export function CartToggleButton({ onClick }: { onClick: () => void }) {
+  const { t } = useI18n();
   const { cart } = useCart();
   const count = cart.itemCount;
 
@@ -10,7 +12,7 @@ export function CartToggleButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       className="shop-cart-button"
-      aria-label={`Open cart${count > 0 ? `, ${count} items` : ""}`}
+      aria-label={count > 0 ? t("a11y.cartItemCount", { count }) : t("a11y.openCart")}
       onClick={onClick}
     >
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">

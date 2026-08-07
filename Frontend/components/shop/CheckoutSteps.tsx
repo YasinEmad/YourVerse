@@ -1,6 +1,7 @@
 "use client";
 
 import type { CheckoutStepConfig, CheckoutStepProps } from "./checkout-steps";
+import { useI18n } from "@/lib/i18n/locale-provider";
 
 export interface CheckoutStepsProps {
   steps: CheckoutStepConfig[];
@@ -21,6 +22,7 @@ export function CheckoutSteps({
   onSubmit,
   isSubmitting,
 }: CheckoutStepsProps) {
+  const { t } = useI18n();
   const ActiveStep = steps[activeIndex].component;
 
   return (
@@ -43,7 +45,7 @@ export function CheckoutSteps({
                 onClick={() => onSelectStep(index)}
               >
                 <span className="shop-steps__number">{isComplete ? "✓" : index + 1}</span>
-                <span>{step.label}</span>
+                <span>{t(step.labelKey)}</span>
               </button>
             </li>
           );

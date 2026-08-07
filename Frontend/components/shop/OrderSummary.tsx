@@ -1,5 +1,8 @@
+"use client";
+
 import type { CartItemDto } from "@/lib/api/types";
 import { computeOrderTotals } from "@/lib/orders/order-totals";
+import { useI18n } from "@/lib/i18n/locale-provider";
 
 export interface OrderSummaryProps {
   items: CartItemDto[];
@@ -7,12 +10,13 @@ export interface OrderSummaryProps {
   title?: string;
 }
 
-export function OrderSummary({ items, currency, title = "Order summary" }: OrderSummaryProps) {
+export function OrderSummary({ items, currency, title }: OrderSummaryProps) {
+  const { t } = useI18n();
   const totals = computeOrderTotals(items);
 
   return (
     <aside className="shop-summary">
-      <h2 className="shop-summary__title">{title}</h2>
+      <h2 className="shop-summary__title">{title ?? t("cart.summaryTitle")}</h2>
       {items.length > 0 ? (
         <ul className="shop-summary__items">
           {items.map((item) => (
@@ -27,27 +31,27 @@ export function OrderSummary({ items, currency, title = "Order summary" }: Order
           ))}
         </ul>
       ) : (
-        <p className="shop-note">Your cart is empty.</p>
+        <p className="shop-note">{t("cart.empty")}</p>
       )}
       <dl className="shop-summary__totals">
         <div>
-          <dt>Subtotal</dt>
+          <dt>{t("cart.subtotal")}</dt>
           <dd>
             {totals.subtotal.toLocaleString()} {currency}
           </dd>
         </div>
         <div>
-          <dt>Shipping</dt>
-          <dd>{totals.shipping === 0 ? "Free" : `${totals.shipping.toLocaleString()} ${currency}`}</dd>
+          <dt>{t("cart.shipping")}</dt>
+          <dd>{totals.shipping === 0 ? t("common.free") : `${totals.shipping.toLocaleString()} ${currency}`}</dd>
         </div>
         <div>
-          <dt>Tax</dt>
+          <dt>{t("cart.tax")}</dt>
           <dd>
             {totals.tax.toLocaleString()} {currency}
           </dd>
         </div>
         <div className="shop-summary__grand">
-          <dt>Total</dt>
+          <dt>{t("cart.total")}</dt>
           <dd>
             {totals.total.toLocaleString()} {currency}
           </dd>

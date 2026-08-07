@@ -14,6 +14,7 @@ interface StoredOrder {
   id: string;
   orderNumber: string;
   status: OrderStatus;
+  sessionId: string;
   items: OrderItemDto[];
   subtotal: number;
   shipping: number;
@@ -60,6 +61,7 @@ export function createOrder(input: CreateOrderInput): OrderDto {
     id,
     orderNumber: `MV-${id.slice(0, 8).toUpperCase()}`,
     status: "PENDING",
+    sessionId: input.sessionId,
     items,
     subtotal: totals.subtotal,
     shipping: totals.shipping,
@@ -79,6 +81,12 @@ export function createOrder(input: CreateOrderInput): OrderDto {
 
 export function getOrder(orderId: string): OrderDto | null {
   return state.orders.get(orderId) ?? null;
+}
+
+export function getOrdersForSession(sessionId: string): OrderDto[] {
+  return [...state.orders.values()]
+    .filter((order) => order.sessionId === sessionId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 export class MockOrderError extends Error {

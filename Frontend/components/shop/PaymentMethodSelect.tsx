@@ -2,8 +2,10 @@
 
 import { getPaymentMethod, paymentMethods } from "./payment-methods";
 import type { PaymentFormProps } from "./payment-methods";
+import { useI18n } from "@/lib/i18n/locale-provider";
 
 export function PaymentMethodSelect({ value, onChange, errors }: PaymentFormProps) {
+  const { t } = useI18n();
   const selectedId = value.paymentMethodId ?? paymentMethods[0].id;
   const selected = getPaymentMethod(selectedId) ?? paymentMethods[0];
 
@@ -12,7 +14,7 @@ export function PaymentMethodSelect({ value, onChange, errors }: PaymentFormProp
 
   return (
     <div className="shop-payment">
-      <div className="shop-payment__methods" role="radiogroup" aria-label="Payment method">
+      <div className="shop-payment__methods" role="radiogroup" aria-label={t("payment.methodLabel")}>
         {paymentMethods.map((method) => {
           const isSelected = method.id === selectedId;
           return (
@@ -28,8 +30,8 @@ export function PaymentMethodSelect({ value, onChange, errors }: PaymentFormProp
                 {method.icon}
               </span>
               <span className="shop-payment__label">
-                <strong>{method.label}</strong>
-                {method.description ? <small>{method.description}</small> : null}
+                <strong>{t(method.labelKey)}</strong>
+                {method.descriptionKey ? <small>{t(method.descriptionKey)}</small> : null}
               </span>
             </button>
           );

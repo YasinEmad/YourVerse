@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import { computeOrderTotals } from "@/lib/orders/order-totals";
+import { useI18n } from "@/lib/i18n/locale-provider";
 import { CartLineItem } from "./CartLineItem";
 
 export interface CartDrawerProps {
@@ -12,24 +13,56 @@ export interface CartDrawerProps {
 }
 
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
+  const { t } = useI18n();
   const { cart, status, updateItem, removeItem } = useCart();
   const totals = computeOrderTotals(cart.items);
   const empty = cart.items.length === 0;
+  const panelRef = useRef<HTMLElement | null>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!open) {
       return;
     }
+    previousFocus.current = document.activeElement as HTMLElement | null;
+
+    const panel = panelRef.current;
+    const focusable = panel?.querySelector<HTMLElement>(
+      "button, [href], [tabindex]:not([tabindex='-1'])",
+    );
+    (focusable ?? panel)?.focus();
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
+        return;
+      }
+      if (event.key !== "Tab" || !panel) {
+        return;
+      }
+      const focusableElements = Array.from(
+        panel.querySelectorAll<HTMLElement>("button, [href], [tabindex]:not([tabindex='-1'])"),
+      );
+      if (focusableElements.length === 0) {
+        return;
+      }
+      const first = focusableElements[0];
+      const last = focusableElements[focusableElements.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
+
     document.addEventListener("keydown", onKeyDown);
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = "";
+      previousFocus.current?.focus?.();
     };
   }, [open, onClose]);
 
@@ -42,25 +75,31 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
       <button
         type="button"
         className="shop-drawer__overlay"
-        aria-label="Close cart"
+        aria-label={t("a11y.close")}
         onClick={onClose}
       />
       <aside
+        ref={panelRef}
         className="shop-drawer__panel"
         role="dialog"
         aria-modal="true"
-        aria-label="Cart"
+        aria-label={t("cart.title")}
       >
         <header className="shop-drawer__head">
-          <h2 className="shop-drawer__title">Your cart</h2>
-          <button type="button" className="shop-drawer__close" aria-label="Close cart" onClick={onClose}>
+          <h2 className="shop-drawer__title">{t("cart.title")}</h2>
+          <button
+            type="button"
+            className="shop-drawer__close"
+            aria-label={t("a11y.close")}
+            onClick={onClose}
+          >
             ×
           </button>
         </header>
 
         {empty ? (
           <p className="shop-drawer__empty">
-            {status === "loading" ? "Loading your cart…" : "Your cart is empty."}
+            {status === "loading" ? t("cart.loading") : t("cart.empty")}
           </p>
         ) : (
           <ul className="shop-drawer__items">
@@ -78,17 +117,17 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
         <footer className="shop-drawer__foot">
           <div className="shop-drawer__subtotal">
-            <span>Subtotal</span>
+            <span>{t("cart.subtotal")}</span>
             <strong>
               {totals.subtotal.toLocaleString()} {cart.currency}
             </strong>
           </div>
           <div className="shop-drawer__actions">
             <Link href="/cart" className="world-button world-button--ghost" onClick={onClose}>
-              View cart
+              {t("cart.viewCart")}
             </Link>
             <Link href="/checkout" className="world-button" onClick={onClose}>
-              Checkout
+              {t("cart.checkout")}
             </Link>
           </div>
         </footer>

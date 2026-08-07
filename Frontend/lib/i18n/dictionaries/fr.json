@@ -1,0 +1,187 @@
+{
+  "a11y": {
+    "skipToContent": "Aller au contenu",
+    "close": "Fermer",
+    "openCart": "Ouvrir le panier",
+    "cartItemCount": "Panier, {count} articles",
+    "decreaseQuantity": "Diminuer la quantité",
+    "increaseQuantity": "Augmenter la quantité",
+    "quantityLabel": "Quantité {qty}"
+  },
+  "nav": {
+    "home": "Accueil",
+    "worlds": "Univers",
+    "cart": "Panier",
+    "account": "Compte",
+    "storeNavigation": "Navigation de la boutique"
+  },
+  "common": {
+    "loading": "Chargement",
+    "addToCart": "Ajouter au panier",
+    "continue": "Continuer",
+    "back": "Retour",
+    "free": "Gratuit",
+    "each": "pièce",
+    "remove": "Retirer",
+    "required": "Requis",
+    "unexpectedError": "Une erreur s'est produite. Veuillez réessayer."
+  },
+  "cart": {
+    "title": "Votre panier",
+    "loading": "Chargement de votre panier…",
+    "empty": "Votre panier est vide.",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "tax": "Taxe",
+    "total": "Total",
+    "viewCart": "Voir le panier",
+    "checkout": "Commander",
+    "browseWorlds": "Parcourir les univers",
+    "proceedToCheckout": "Passer au paiement",
+    "summaryTitle": "Résumé de la commande"
+  },
+  "checkout": {
+    "title": "Commander",
+    "backToCart": "Retour au panier",
+    "emptyCart": "Votre panier est vide.",
+    "loading": "Chargement de votre panier…",
+    "steps": {
+      "shipping": "Livraison",
+      "payment": "Paiement",
+      "review": "Récapitulatif"
+    },
+    "shippingTitle": "Détails de livraison",
+    "shippingFields": {
+      "fullName": "Nom complet",
+      "email": "E-mail",
+      "phoneOptional": "Téléphone (facultatif)",
+      "line1": "Adresse — ligne 1",
+      "line2Optional": "Adresse — ligne 2 (facultatif)",
+      "city": "Ville",
+      "regionOptional": "Région (facultatif)",
+      "postalCodeOptional": "Code postal (facultatif)",
+      "country": "Pays"
+    },
+    "paymentTitle": "Moyen de paiement",
+    "reviewTitle": "Récapitulatif de votre commande",
+    "placeOrder": "Passer la commande",
+    "placingOrder": "Passage de la commande…",
+    "orderConfirmed": "Commande confirmée",
+    "orderNumber": "Commande {number}",
+    "items": "Articles",
+    "totals": "Totaux",
+    "delivery": "Livraison",
+    "shipTo": "Livrer à",
+    "email": "E-mail",
+    "payment": "Paiement",
+    "placed": "Passée le",
+    "continueShopping": "Continuer vos achats",
+    "requiredField": "Requis",
+    "invalidEmail": "Saisissez une adresse e-mail valide"
+  },
+  "payment": {
+    "methodLabel": "Moyen de paiement",
+    "card": "Carte",
+    "cardDescription": "Payez avec une carte de crédit ou de débit.",
+    "cardNumber": "Numéro de carte",
+    "expiry": "Expiration",
+    "cvc": "CVC",
+    "wallet": "Portefeuille",
+    "walletDescription": "Payez depuis le solde de votre portefeuille.",
+    "walletEmail": "E-mail du portefeuille",
+    "cod": "Contre-remboursement",
+    "codDescription": "Payez à la réception de votre commande.",
+    "codNote": "Payez en espèces à la livraison de votre commande."
+  },
+  "auth": {
+    "loginTitle": "Se connecter",
+    "registerTitle": "Créer un compte",
+    "name": "Nom complet",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "login": "Se connecter",
+    "register": "Créer le compte",
+    "noAccount": "Pas encore de compte ?",
+    "haveAccount": "Déjà un compte ?",
+    "createOne": "En créer un",
+    "signInInstead": "Se connecter",
+    "backToStore": "Retour à la boutique",
+    "requiredField": "Requis",
+    "invalidEmail": "Saisissez une adresse e-mail valide",
+    "nameRequired": "Le nom est requis",
+    "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
+    "authUnavailable": "L'authentification n'est pas encore disponible. Ce formulaire est prêt à se connecter au service d'authentification lorsqu'il sera en ligne.",
+    "unexpectedError": "Une erreur s'est produite. Veuillez réessayer."
+  },
+  "account": {
+    "title": "Compte",
+    "welcome": "Bienvenue, {name}",
+    "email": "E-mail",
+    "memberSince": "Membre depuis",
+    "favoriteWorld": "Univers favori",
+    "overview": "Vue d'ensemble",
+    "orders": "Commandes",
+    "achievements": "Succès",
+    "recentAchievements": "Succès récents",
+    "viewAllOrders": "Voir toutes les commandes",
+    "signOut": "Se déconnecter"
+  },
+  "orders": {
+    "title": "Commandes",
+    "empty": "Vous n'avez pas encore passé de commande.",
+    "orderNumber": "Commande {number}",
+    "placedOn": "Passée le {date}",
+    "status": "Statut",
+    "total": "Total",
+    "viewOrder": "Voir la commande",
+    "backToOrders": "Retour aux commandes",
+    "backToAccount": "Retour au compte",
+    "items": "Articles",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "tax": "Taxe",
+    "delivery": "Livraison",
+    "shipTo": "Livrer à",
+    "email": "E-mail",
+    "payment": "Paiement",
+    "free": "Gratuit",
+    "statuses": {
+      "pending": "En attente",
+      "paid": "Payée",
+      "completed": "Terminée",
+      "cancelled": "Annulée",
+      "refunded": "Remboursée"
+    }
+  },
+  "achievements": {
+    "title": "Succès",
+    "empty": "Aucun succès débloqué pour le moment.",
+    "locked": "Verrouillé",
+    "unlockedOn": "Débloqué le {date}",
+    "items": {
+      "first-order": {
+        "title": "Première commande",
+        "description": "Passez votre première commande."
+      },
+      "collector": {
+        "title": "Collectionneur",
+        "description": "Possédez des articles de trois univers."
+      },
+      "vip": {
+        "title": "VIP",
+        "description": "Atteignez le niveau de fidélité or."
+      }
+    }
+  },
+  "loyalty": {
+    "title": "Fidélité",
+    "points": "{points} points",
+    "pointsToNext": "{points} points vers {tier}",
+    "maxTier": "Vous avez atteint le niveau le plus élevé.",
+    "tiers": {
+      "bronze": "Bronze",
+      "silver": "Argent",
+      "gold": "Or"
+    }
+  }
+}

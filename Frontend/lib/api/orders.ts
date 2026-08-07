@@ -1,11 +1,15 @@
 import { ApiError, apiRequest } from "./client";
-import type { CreateOrderRequestDto, OrderDto } from "./types";
+import type { CreateOrderRequestDto, OrderDto, OrderListResponseDto } from "./types";
 
 export function createOrder(input: CreateOrderRequestDto): Promise<OrderDto> {
   return apiRequest<OrderDto>("/orders", {
     method: "POST",
     body: JSON.stringify(input),
   });
+}
+
+export function getOrders(): Promise<OrderListResponseDto> {
+  return apiRequest<OrderListResponseDto>("/orders");
 }
 
 export function getOrder(orderId: string): Promise<OrderDto | null> {

@@ -105,3 +105,22 @@ export interface UserDto {
   favoriteWorld?: string;
   loyaltyPoints: number;
 }
+
+export interface LoginRequestDto {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequestDto {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface SessionDto {
+  user: UserDto;
+}
+
+export interface OrderListResponseDto {
+  items: OrderDto[];
+}

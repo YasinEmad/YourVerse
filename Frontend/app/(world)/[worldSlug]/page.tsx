@@ -18,7 +18,7 @@ export default async function WorldPage({ params }: { params: { worldSlug: strin
   return (
     <>
       <WorldNav />
-      <main>
+      <main id="main-content">
         <WorldHero />
         <ProductGrid title={config.name.en} products={products} />
       </main>
