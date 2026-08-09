@@ -47,7 +47,6 @@
     "loading": "جارٍ تحميل سلّتك…",
     "steps": {
       "shipping": "الشحن",
-      "payment": "الدفع",
       "review": "المراجعة"
     },
     "shippingTitle": "بيانات الشحن",
@@ -62,7 +61,6 @@
       "postalCodeOptional": "الرمز البريدي (اختياري)",
       "country": "الدولة"
     },
-    "paymentTitle": "طريقة الدفع",
     "reviewTitle": "مراجعة طلبك",
     "placeOrder": "تأكيد الطلب",
     "placingOrder": "جارٍ تأكيد الطلب…",
@@ -80,17 +78,7 @@
     "invalidEmail": "أدخل بريدًا إلكترونيًا صحيحًا"
   },
   "payment": {
-    "methodLabel": "طريقة الدفع",
-    "card": "بطاقة",
-    "cardDescription": "ادفع ببطاقة ائتمان أو خصم.",
-    "cardNumber": "رقم البطاقة",
-    "expiry": "تاريخ الانتهاء",
-    "cvc": "رمز CVC",
-    "wallet": "محفظة",
-    "walletDescription": "ادفع من رصيد محفظتك في المتجر.",
-    "walletEmail": "بريد المحفظة",
     "cod": "الدفع عند الاستلام",
-    "codDescription": "ادفع عند وصول طلبك.",
     "codNote": "ادفع نقدًا عند وصول طلبك."
   },
   "auth": {
@@ -148,9 +136,9 @@
     "statuses": {
       "pending": "قيد الانتظار",
       "paid": "مدفوع",
-      "completed": "مكتمل",
       "cancelled": "ملغي",
-      "refunded": "مسترد"
+      "refunded": "مسترد",
+      "fulfilled": "مكتمل"
     }
   },
   "achievements": {

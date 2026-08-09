@@ -26,7 +26,11 @@ export interface ProductListResponseDto {
   nextCursor: string | null;
 }
 
-export type OrderStatus = "PENDING" | "PAID" | "COMPLETED" | "CANCELLED" | "REFUNDED";
+// Phase 2 (COD-only): matches the backend's OrderStatus enum exactly
+// (backend-architecture.md §4). The backend writes PENDING today; FULFILLED
+// replaces the old frontend-only COMPLETED/REFUNDED values once fulfillment
+// ships.
+export type OrderStatus = "PENDING" | "PAID" | "FULFILLED" | "CANCELLED";
 
 export interface CartItemDto {
   id: string;
@@ -68,17 +72,12 @@ export interface AddressDto {
   country: string;
 }
 
-// TODO(follow-up, Phase 2 simplification): the backend is COD-only and its
-// OrderDto deliberately DROPS paymentMethodId (backend-architecture.md §4/§9).
-// The fields flagged below are retained to keep the frontend compiling during
-// cutover but should be removed alongside the payment-method UI simplification
-// (see components/shop/payment-methods.tsx). OrderStatus also needs to match
-// the backend enum (PENDING | PAID | FULFILLED | CANCELLED) once the backend
-// starts writing more than PENDING.
+// Phase 2 (COD-only): the backend derives the cart from the resolved session,
+// so cartId is retained for mock parity but no payment method is sent — every
+// order is Cash on Delivery.
 export interface CreateOrderRequestDto {
   cartId: string;
   shippingAddress: AddressDto;
-  paymentMethodId: string; // TODO(follow-up): removed with the COD-only simplification
 }
 
 export interface OrderItemDto {
@@ -100,7 +99,6 @@ export interface OrderDto {
   tax: number;
   total: number;
   currency: string;
-  paymentMethodId: string; // TODO(follow-up): removed with the COD-only simplification
   shippingAddress: AddressDto;
   createdAt: string;
 }

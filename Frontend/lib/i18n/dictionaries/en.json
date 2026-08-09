@@ -47,7 +47,6 @@
     "loading": "Loading your cart…",
     "steps": {
       "shipping": "Shipping",
-      "payment": "Payment",
       "review": "Review"
     },
     "shippingTitle": "Shipping details",
@@ -62,7 +61,6 @@
       "postalCodeOptional": "Postal code (optional)",
       "country": "Country"
     },
-    "paymentTitle": "Payment method",
     "reviewTitle": "Review your order",
     "placeOrder": "Place order",
     "placingOrder": "Placing order…",
@@ -80,17 +78,7 @@
     "invalidEmail": "Enter a valid email address"
   },
   "payment": {
-    "methodLabel": "Payment method",
-    "card": "Card",
-    "cardDescription": "Pay with a credit or debit card.",
-    "cardNumber": "Card number",
-    "expiry": "Expiry",
-    "cvc": "CVC",
-    "wallet": "Wallet",
-    "walletDescription": "Pay from your store wallet balance.",
-    "walletEmail": "Wallet email",
     "cod": "Cash on delivery",
-    "codDescription": "Pay when your order arrives.",
     "codNote": "Pay in cash when your order is delivered."
   },
   "auth": {
@@ -148,7 +136,7 @@
     "statuses": {
       "pending": "Pending",
       "paid": "Paid",
-      "completed": "Completed",
+      "fulfilled": "Fulfilled",
       "cancelled": "Cancelled",
       "refunded": "Refunded"
     }

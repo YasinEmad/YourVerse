@@ -2,11 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireSession } from "@/lib/auth/getSession";
 import { getOrder } from "@/lib/api/orders";
-import { computeOrderTotals } from "@/lib/orders/order-totals";
 import { getServerDictionary } from "@/lib/i18n/server";
 import { getLocaleFromHeaders } from "@/lib/i18n/server";
 import { createTranslator } from "@/lib/i18n/translate";
-import { getPaymentMethod } from "@/components/shop/payment-methods";
 
 export const dynamic = "force-dynamic";
 
@@ -25,8 +23,8 @@ export default async function OrderDetailPage({
     notFound();
   }
 
-  const totals = computeOrderTotals(order.items);
-  const paymentMethod = getPaymentMethod(order.paymentMethodId);
+  // Totals render the backend's authoritative OrderDto values
+  // (backend-architecture.md §12), never a client-side recomputation.
 
   return (
     <div className="shop-page__inner">
@@ -52,27 +50,27 @@ export default async function OrderDetailPage({
           <div>
             <dt>{dict.orders.subtotal}</dt>
             <dd>
-              {totals.subtotal.toLocaleString(locale)} {order.currency}
+              {order.subtotal.toLocaleString(locale)} {order.currency}
             </dd>
           </div>
           <div>
             <dt>{dict.orders.shipping}</dt>
             <dd>
-              {totals.shipping === 0
+              {order.shipping === 0
                 ? dict.orders.free
-                : `${totals.shipping.toLocaleString(locale)} ${order.currency}`}
+                : `${order.shipping.toLocaleString(locale)} ${order.currency}`}
             </dd>
           </div>
           <div>
             <dt>{dict.orders.tax}</dt>
             <dd>
-              {totals.tax.toLocaleString(locale)} {order.currency}
+              {order.tax.toLocaleString(locale)} {order.currency}
             </dd>
           </div>
           <div className="shop-summary__grand">
             <dt>{dict.orders.total}</dt>
             <dd>
-              {totals.total.toLocaleString(locale)} {order.currency}
+              {order.total.toLocaleString(locale)} {order.currency}
             </dd>
           </div>
         </dl>
@@ -101,7 +99,9 @@ export default async function OrderDetailPage({
           </div>
           <div>
             <dt>{dict.orders.payment}</dt>
-            <dd>{paymentMethod ? t(paymentMethod.labelKey) : order.paymentMethodId}</dd>
+            <dd>
+              {t("payment.cod")} — {t("payment.codNote")}
+            </dd>
           </div>
           <div>
             <dt>{t("checkout.placed")}</dt>

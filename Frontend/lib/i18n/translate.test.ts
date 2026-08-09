@@ -24,7 +24,7 @@ describe("translate", () => {
   it("resolves nested keys", () => {
     const en = getDictionary("en");
     expect(lookup(en, "checkout.steps.shipping")).toBe("Shipping");
-    expect(translate(en, "orders.statuses.completed")).toBe("Completed");
+    expect(translate(en, "orders.statuses.fulfilled")).toBe("Fulfilled");
   });
 
   it("returns the path itself when a key is missing", () => {

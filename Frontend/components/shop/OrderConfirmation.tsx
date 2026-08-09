@@ -1,19 +1,18 @@
 import Link from "next/link";
 import type { OrderDto } from "@/lib/api/types";
-import type { OrderTotals } from "@/lib/orders/order-totals";
 import type { Dictionary } from "@/lib/i18n/getDictionary";
 import { createTranslator } from "@/lib/i18n/translate";
-import { getPaymentMethod } from "./payment-methods";
 
 export interface OrderConfirmationProps {
   order: OrderDto;
-  totals: OrderTotals;
   dict: Dictionary;
 }
 
-export function OrderConfirmation({ order, totals, dict }: OrderConfirmationProps) {
+// Renders the backend's AUTHORITATIVE OrderDto totals (backend-architecture.md
+// §12) — never a client-side recomputation. COD-only: payment is shown as a
+// static notice, not a stored choice.
+export function OrderConfirmation({ order, dict }: OrderConfirmationProps) {
   const t = createTranslator(dict);
-  const paymentMethod = getPaymentMethod(order.paymentMethodId);
 
   return (
     <div className="shop-confirmation">
@@ -49,27 +48,27 @@ export function OrderConfirmation({ order, totals, dict }: OrderConfirmationProp
           <div>
             <dt>{t("cart.subtotal")}</dt>
             <dd>
-              {totals.subtotal.toLocaleString()} {order.currency}
+              {order.subtotal.toLocaleString()} {order.currency}
             </dd>
           </div>
           <div>
             <dt>{t("cart.shipping")}</dt>
             <dd>
-              {totals.shipping === 0
+              {order.shipping === 0
                 ? t("common.free")
-                : `${totals.shipping.toLocaleString()} ${order.currency}`}
+                : `${order.shipping.toLocaleString()} ${order.currency}`}
             </dd>
           </div>
           <div>
             <dt>{t("cart.tax")}</dt>
             <dd>
-              {totals.tax.toLocaleString()} {order.currency}
+              {order.tax.toLocaleString()} {order.currency}
             </dd>
           </div>
           <div className="shop-summary__grand">
             <dt>{t("cart.total")}</dt>
             <dd>
-              {totals.total.toLocaleString()} {order.currency}
+              {order.total.toLocaleString()} {order.currency}
             </dd>
           </div>
         </dl>
@@ -94,7 +93,9 @@ export function OrderConfirmation({ order, totals, dict }: OrderConfirmationProp
           </div>
           <div>
             <dt>{t("checkout.payment")}</dt>
-            <dd>{paymentMethod ? t(paymentMethod.labelKey) : order.paymentMethodId}</dd>
+            <dd>
+              {t("payment.cod")} — {t("payment.codNote")}
+            </dd>
           </div>
           <div>
             <dt>{t("checkout.placed")}</dt>

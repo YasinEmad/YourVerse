@@ -5,14 +5,12 @@ import { useState } from "react";
 import type { CheckoutStepProps } from "../checkout-steps";
 import { useCart } from "@/hooks/useCart";
 import { OrderSummary } from "../OrderSummary";
-import { getPaymentMethod } from "../payment-methods";
 import { useI18n } from "@/lib/i18n/locale-provider";
 
 export function ReviewStep({ value, onSubmit, isSubmitting }: CheckoutStepProps) {
   const { t } = useI18n();
   const { cart } = useCart();
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const method = getPaymentMethod(value.paymentMethodId ?? "");
 
   const shippingAddress = {
     fullName: value.fullName ?? "",
@@ -70,7 +68,9 @@ export function ReviewStep({ value, onSubmit, isSubmitting }: CheckoutStepProps)
           </div>
           <div>
             <dt>{t("checkout.payment")}</dt>
-            <dd>{method ? t(method.labelKey) : value.paymentMethodId ?? "—"}</dd>
+            <dd>
+              {t("payment.cod")} — {t("payment.codNote")}
+            </dd>
           </div>
         </dl>
         {errors.email ? <p className="shop-error" role="alert">{errors.email}</p> : null}

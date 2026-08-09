@@ -1,7 +1,6 @@
 import "@/lib/api/server";
 import { notFound } from "next/navigation";
 import { getOrder } from "@/lib/api/orders";
-import { computeOrderTotals } from "@/lib/orders/order-totals";
 import { getServerDictionary } from "@/lib/i18n/server";
 import { OrderConfirmation } from "@/components/shop/OrderConfirmation";
 
@@ -18,14 +17,13 @@ export default async function OrderConfirmationPage({
     notFound();
   }
 
-  // Re-derive totals from the order record server-side rather than trusting
-  // anything the client could have sent or stored.
-  const totals = computeOrderTotals(order.items);
+  // Totals are rendered from the backend's authoritative OrderDto fields
+  // (backend-architecture.md §12) — never recomputed client-side.
   const dict = await getServerDictionary();
 
   return (
     <div className="shop-page__inner">
-      <OrderConfirmation order={order} totals={totals} dict={dict} />
+      <OrderConfirmation order={order} dict={dict} />
     </div>
   );
 }

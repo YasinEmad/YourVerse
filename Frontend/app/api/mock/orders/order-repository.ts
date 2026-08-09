@@ -7,7 +7,6 @@ export interface CreateOrderInput {
   sessionId: string;
   cartId: string;
   shippingAddress: AddressDto;
-  paymentMethodId: string;
 }
 
 interface StoredOrder {
@@ -21,7 +20,6 @@ interface StoredOrder {
   tax: number;
   total: number;
   currency: string;
-  paymentMethodId: string;
   shippingAddress: AddressDto;
   createdAt: string;
 }
@@ -68,7 +66,6 @@ export function createOrder(input: CreateOrderInput): OrderDto {
     tax: totals.tax,
     total: totals.total,
     currency: cart.currency,
-    paymentMethodId: input.paymentMethodId,
     shippingAddress: input.shippingAddress,
     createdAt,
   };

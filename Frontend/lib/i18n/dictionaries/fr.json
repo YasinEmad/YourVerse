@@ -47,7 +47,6 @@
     "loading": "Chargement de votre panier…",
     "steps": {
       "shipping": "Livraison",
-      "payment": "Paiement",
       "review": "Récapitulatif"
     },
     "shippingTitle": "Détails de livraison",
@@ -62,7 +61,6 @@
       "postalCodeOptional": "Code postal (facultatif)",
       "country": "Pays"
     },
-    "paymentTitle": "Moyen de paiement",
     "reviewTitle": "Récapitulatif de votre commande",
     "placeOrder": "Passer la commande",
     "placingOrder": "Passage de la commande…",
@@ -80,17 +78,7 @@
     "invalidEmail": "Saisissez une adresse e-mail valide"
   },
   "payment": {
-    "methodLabel": "Moyen de paiement",
-    "card": "Carte",
-    "cardDescription": "Payez avec une carte de crédit ou de débit.",
-    "cardNumber": "Numéro de carte",
-    "expiry": "Expiration",
-    "cvc": "CVC",
-    "wallet": "Portefeuille",
-    "walletDescription": "Payez depuis le solde de votre portefeuille.",
-    "walletEmail": "E-mail du portefeuille",
     "cod": "Contre-remboursement",
-    "codDescription": "Payez à la réception de votre commande.",
     "codNote": "Payez en espèces à la livraison de votre commande."
   },
   "auth": {
@@ -148,9 +136,9 @@
     "statuses": {
       "pending": "En attente",
       "paid": "Payée",
-      "completed": "Terminée",
       "cancelled": "Annulée",
-      "refunded": "Remboursée"
+      "refunded": "Remboursée",
+      "fulfilled": "Terminée"
     }
   },
   "achievements": {

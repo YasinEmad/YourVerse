@@ -9,6 +9,7 @@ import {
 } from "../../src/catalog/product.mapper";
 import { toWorldDetailDto, toWorldSummaryDto, WorldRow } from "../../src/worlds/world.mapper";
 import { CartRow, toCartDto } from "../../src/cart/cart.mapper";
+import { OrderRow, toOrderDto } from "../../src/orders/orders.mapper";
 
 // ---------------------------------------------------------------------------
 // Contract fixture-diff test.
@@ -28,7 +29,7 @@ const FRONTEND_TYPES_FILE = path.join(FRONTEND_ROOT, "lib/api/types.ts");
 const FRONTEND_PRODUCT_TYPES_FILE = path.join(FRONTEND_ROOT, "types/product.ts");
 
 type ShapeNode =
-  | { kind: "scalar"; type: string }
+  | { kind: "scalar"; type: string; value?: string | number | boolean }
   | { kind: "nested"; name: string; shape: Map<string, Member> }
   | { kind: "array"; name: string; shape: Map<string, Member> };
 
@@ -78,6 +79,15 @@ class FrontendTypesParser {
         if (ts.isInterfaceDeclaration(statement) && statement.name.text === name) {
           return this.membersOf(statement, source);
         }
+      }
+    }
+    return undefined;
+  }
+
+  private resolveTypeAlias(name: string, source: ts.SourceFile): ShapeNode | undefined {
+    for (const statement of source.statements) {
+      if (ts.isTypeAliasDeclaration(statement) && statement.name.text === name && statement.type) {
+        return this.typeToNode(statement.type, source);
       }
     }
     return undefined;
@@ -133,6 +143,10 @@ class FrontendTypesParser {
       const inner = typeNode.elementType;
       if (ts.isTypeReferenceNode(inner)) {
         const name = inner.typeName.getText();
+        const alias = this.resolveTypeAlias(name, source);
+        if (alias) {
+          return { kind: "array", name, shape: alias.kind === "nested" || alias.kind === "array" ? alias.shape : new Map() };
+        }
         const shape = this.interfaceInFile(name, source) ?? this.resolveInterface(name);
         return { kind: "array", name, shape: shape ?? new Map() };
       }
@@ -141,6 +155,9 @@ class FrontendTypesParser {
 
     if (ts.isTypeReferenceNode(typeNode)) {
       const name = typeNode.typeName.getText();
+      // Type aliases (e.g. OrderStatus) may resolve to a union or scalar.
+      const alias = this.resolveTypeAlias(name, source);
+      if (alias) return alias;
       const shape = this.interfaceInFile(name, source) ?? this.resolveInterface(name);
       return { kind: "nested", name, shape: shape ?? new Map() };
     }
@@ -172,20 +189,36 @@ function shapeOf(value: unknown): ShapeNode {
     return { kind: "nested", name: "object", shape };
   }
   const type = value === null ? "null" : typeof value;
-  return { kind: "scalar", type };
+  return {
+    kind: "scalar",
+    type,
+    value: value === null || typeof value === "object" ? undefined : (value as string | number | boolean),
+  };
 }
 
 function scalarBase(type: string): string {
   return type
     .split("|")
-    .map((part) => part.trim())
-    .filter((part) => part !== "null")
+    .map((part) => part.trim().replace(/^"|"$/g, ""))
+    .filter((part) => part !== "null" && part !== "unknown")
     .sort()
     .join("|");
 }
 
-function scalarCompatible(frontend: string, backend: string): boolean {
-  return scalarBase(frontend) === scalarBase(backend);
+function scalarCompatible(
+  frontend: string,
+  backend: string,
+  backendValue?: string | number | boolean,
+): boolean {
+  const f = scalarBase(frontend);
+  const b = scalarBase(backend);
+  if (f === b) return true;
+  // Frontend enum-style union (e.g. OrderStatus): accept when the backend's
+  // concrete sample value is a member of the union.
+  if (f.includes("|") && typeof backendValue === "string") {
+    return f.split("|").includes(backendValue);
+  }
+  return false;
 }
 
 function typeLabel(node: ShapeNode): string {
@@ -223,7 +256,7 @@ function compareDto(
         errors.push(...sub);
       } else if (f.kind === "scalar" && b.kind === "scalar") {
         lines.push(`${name.padEnd(18)} ${f.type}${member.optional ? "?" : ""}`);
-        if (!scalarCompatible(f.type, b.type)) {
+        if (!scalarCompatible(f.type, b.type, b.value)) {
           errors.push(`${dtoName}.${name}: type mismatch (frontend "${f.type}" vs backend "${b.type}")`);
         }
       } else {
@@ -308,6 +341,36 @@ const fullCartRow: CartRow = {
   ],
 };
 
+const fullOrderRow: OrderRow = {
+  id: "order-1a2b3c4d-5e6f-7890-abcd-ef1234567890",
+  status: "PENDING",
+  subtotal: 17800,
+  shipping: 500,
+  tax: 1780,
+  total: 20080,
+  currency: "USD",
+  shippingAddress: {
+    fullName: "Test User",
+    email: "test@example.com",
+    phone: "+1 555 0100",
+    line1: "1 Test Street",
+    line2: "Apt 2",
+    city: "Cairo",
+    region: "Giza",
+    postalCode: "11511",
+    country: "EG",
+  },
+  createdAt: new Date("2026-01-15T12:00:00.000Z"),
+  items: [
+    {
+      id: "line-00000000-0000-4000-8000-000000000002",
+      quantity: 2,
+      unitPrice: 8900,
+      product: { slug: "the-one-hoodie", baseTitle: "Mono Hoodie" },
+    },
+  ],
+};
+
 const backendSamples: Array<{ name: string; value: unknown }> = [
   { name: "WorldSummaryDto", value: toWorldSummaryDto(fullWorldRow) },
   {
@@ -328,11 +391,13 @@ const backendSamples: Array<{ name: string; value: unknown }> = [
   { name: "ProductViewModel", value: toBaseProductDetailDto(fullProductRow) },
   { name: "CartDto", value: toCartDto(fullCartRow) },
   { name: "CartItemDto", value: toCartDto(fullCartRow).items[0] },
-  // NOTE: OrderDto/OrderItemDto/OrderListResponseDto are deliberately NOT
-  // compared yet — the backend dropped paymentMethodId (COD-only, Phase 2)
-  // while the frontend contract still requires it. The comparison joins once
-  // the frontend's payment-method simplification lands (see
-  // components/shop/payment-methods.tsx).
+  // Phase 2 (COD-only): the frontend dropped paymentMethodId, so OrderDto now
+  // matches the backend field-for-field and joins the contract diff. OrderStatus
+  // is a union on the frontend side; scalarCompatible treats a concrete backend
+  // sample value as compatible when it is a member of the union.
+  { name: "OrderDto", value: toOrderDto(fullOrderRow) },
+  { name: "OrderItemDto", value: toOrderDto(fullOrderRow).items[0] },
+  { name: "OrderListResponseDto", value: { items: [toOrderDto(fullOrderRow)] } },
 ];
 
 describe("DTO contract vs Frontend/lib/api/types.ts", () => {

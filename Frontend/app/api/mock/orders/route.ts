@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { SESSION_HEADER_NAME } from "@/lib/api/client";
 import type { CreateOrderRequestDto, OrderDto, OrderListResponseDto } from "@/lib/api/types";
-import { KNOWN_PAYMENT_METHOD_IDS } from "@/components/shop/payment-methods";
 import { createOrder, getOrdersForSession, MockOrderError } from "./order-repository";
 
 export function GET(
@@ -30,9 +29,8 @@ export async function POST(
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (!KNOWN_PAYMENT_METHOD_IDS.includes(body.paymentMethodId)) {
-    return NextResponse.json({ error: "Unknown payment method" }, { status: 400 });
-  }
+  // Phase 2 (COD-only): no payment method is accepted or validated — every
+  // order is Cash on Delivery, mirroring the backend (backend-architecture.md §4).
   const required: Array<keyof CreateOrderRequestDto["shippingAddress"]> = [
     "fullName",
     "email",
@@ -51,7 +49,6 @@ export async function POST(
       sessionId,
       cartId: body.cartId,
       shippingAddress: body.shippingAddress,
-      paymentMethodId: body.paymentMethodId,
     });
     return NextResponse.json(order, { status: 201 });
   } catch (error) {
