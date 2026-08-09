@@ -12,14 +12,20 @@ export function CharacterCardLayout({
   onAddToCart?: () => void;
 }) {
   return (
-    <article className="world-card world-card--character">
-      <div className="world-card__media-wrap">
+    <article className="flex flex-col gap-3 rounded-world border border-world-border bg-world-surface p-6 text-world-text">
+      <div className="relative">
         <CardMedia product={product} />
-        {product.badge ? <span className="world-card__rank">{product.badge}</span> : null}
+        {product.badge ? (
+          <span className="absolute top-2 end-2 rounded-world bg-world-accent px-2 py-1 font-world-heading text-xs font-bold text-world-bg">
+            {product.badge}
+          </span>
+        ) : null}
       </div>
-      <h3 className="world-card__title">{product.title}</h3>
-      {product.subtitle ? <p className="world-card__subtitle">{product.subtitle}</p> : null}
-      <div className="world-card__chips">
+      <h3 className="font-world-heading text-lg leading-snug text-world-text">{product.title}</h3>
+      {product.subtitle ? (
+        <p className="m-0 text-sm text-world-text-muted">{product.subtitle}</p>
+      ) : null}
+      <div className="flex flex-wrap gap-2">
         <CardTag>
           {labels.primaryMeta.en}: {product.primaryMeta ?? "—"}
         </CardTag>
@@ -27,9 +33,11 @@ export function CharacterCardLayout({
           <CardTag>{product.secondaryMeta}</CardTag>
         ) : null}
       </div>
-      <footer className="world-card__foot">
+      <footer className="mt-auto flex items-center justify-between gap-4">
         <CardPrice product={product} />
-        <CardCta disabled={!product.available} onClick={onAddToCart}>{labels.ctaLabel.en}</CardCta>
+        <CardCta disabled={!product.available} onClick={onAddToCart}>
+          {labels.ctaLabel.en}
+        </CardCta>
       </footer>
     </article>
   );

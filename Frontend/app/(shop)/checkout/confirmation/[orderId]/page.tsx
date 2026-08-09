@@ -22,7 +22,7 @@ export default async function OrderConfirmationPage({
   const dict = await getServerDictionary();
 
   return (
-    <div className="shop-page__inner">
+    <div className="mx-auto w-full max-w-[60rem] px-6 pt-12 pb-24">
       <OrderConfirmation order={order} dict={dict} />
     </div>
   );

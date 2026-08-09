@@ -64,15 +64,20 @@ export function CheckoutForm() {
   };
 
   if (status === "idle" || status === "loading") {
-    return <p className="shop-loading">{t("checkout.loading")}</p>;
+    return <p className="text-world-text-muted">{t("checkout.loading")}</p>;
   }
 
   if (cart.items.length === 0) {
     return (
-      <div className="shop-page__inner">
-        <h1 className="shop-page__title">{t("checkout.title")}</h1>
-        <p className="shop-empty">{t("checkout.emptyCart")}</p>
-        <Link href="/cart" className="world-button">
+      <div className="mx-auto w-full max-w-[60rem] px-6 pt-12 pb-24">
+        <h1 className="font-heading m-0 mb-8 text-4xl leading-tight text-world-text">
+          {t("checkout.title")}
+        </h1>
+        <p className="m-0 text-world-text-muted">{t("checkout.emptyCart")}</p>
+        <Link
+          href="/cart"
+          className="mt-8 inline-flex cursor-pointer items-center justify-center rounded-world border border-world-primary bg-world-primary px-4 py-2 text-sm font-semibold text-world-bg transition-[opacity,transform] duration-150 hover:-translate-y-px hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45"
+        >
           {t("checkout.backToCart")}
         </Link>
       </div>
@@ -80,8 +85,10 @@ export function CheckoutForm() {
   }
 
   return (
-    <div className="shop-page__inner">
-      <h1 className="shop-page__title">{t("checkout.title")}</h1>
+    <div className="mx-auto w-full max-w-[60rem] px-6 pt-12 pb-24">
+      <h1 className="font-heading m-0 mb-8 text-4xl leading-tight text-world-text">
+        {t("checkout.title")}
+      </h1>
       <CheckoutSteps
         steps={checkoutSteps}
         activeIndex={activeIndex}
@@ -96,7 +103,7 @@ export function CheckoutForm() {
         isSubmitting={submitting}
       />
       {error ? (
-        <p className="shop-error" role="alert">
+        <p className="mt-4 font-semibold text-world-accent" role="alert">
           {error}
         </p>
       ) : null}

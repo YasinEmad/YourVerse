@@ -23,13 +23,15 @@ export default async function AchievementsPage() {
   }));
 
   return (
-    <div className="shop-page__inner">
-      <h1 className="shop-page__title">{dict.achievements.title}</h1>
+    <div className="mx-auto w-full max-w-[60rem] px-6 pt-12 pb-24">
+      <h1 className="font-heading m-0 mb-8 text-4xl leading-tight text-world-text">
+        {dict.achievements.title}
+      </h1>
 
       {achievements.length === 0 ? (
-        <p className="shop-empty">{dict.achievements.empty}</p>
+        <p className="m-0 text-world-text-muted">{dict.achievements.empty}</p>
       ) : (
-        <ul className="achievement-list">
+        <ul className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(min(100%,14rem),1fr))] gap-4 p-0">
           {achievements.map((achievement) => (
             <AchievementBadge
               key={achievement.id}
@@ -44,7 +46,10 @@ export default async function AchievementsPage() {
         </ul>
       )}
 
-      <Link href="/account" className="account-back-link">
+      <Link
+        href="/account"
+        className="mt-8 inline-flex items-center gap-2 rounded-world border border-world-border bg-transparent px-3 py-2 text-sm text-world-text-muted no-underline transition-colors duration-150 hover:border-world-primary hover:text-world-text"
+      >
         {dict.orders.backToAccount}
       </Link>
     </div>

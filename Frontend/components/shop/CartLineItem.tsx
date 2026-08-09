@@ -23,29 +23,32 @@ export function CartLineItem({
   const lineTotal = toLineTotal(item);
 
   return (
-    <li className="shop-line-item">
-      <div className="shop-line-item__info">
-        <h3 className="shop-line-item__title">{item.title}</h3>
-        <p className="shop-line-item__price">
+    <li className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-4 rounded-world border border-world-border bg-world-surface p-4 max-[48rem]:grid-cols-1">
+      <div>
+        <h3 className="font-heading m-0 text-base text-world-text">{item.title}</h3>
+        <p className="mt-1 text-sm text-world-text-muted">
           {item.unitPrice.toLocaleString()} {currency} {t("common.each")}
         </p>
       </div>
-      <div className="shop-line-item__controls">
+      <div className="flex items-center gap-2">
         <button
           type="button"
-          className="shop-line-item__qty"
+          className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-world border border-world-border bg-transparent text-world-text transition-colors duration-150 hover:border-world-primary hover:text-world-primary disabled:cursor-not-allowed disabled:opacity-40"
           disabled={disabled || item.quantity <= 1}
           aria-label={t("a11y.decreaseQuantity")}
           onClick={() => onUpdateQuantity(item.quantity - 1)}
         >
           −
         </button>
-        <span className="shop-line-item__count" aria-label={t("a11y.quantityLabel", { qty: item.quantity })}>
+        <span
+          className="min-w-[2ch] text-center font-mono text-world-text"
+          aria-label={t("a11y.quantityLabel", { qty: item.quantity })}
+        >
           {item.quantity}
         </span>
         <button
           type="button"
-          className="shop-line-item__qty"
+          className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-world border border-world-border bg-transparent text-world-text transition-colors duration-150 hover:border-world-primary hover:text-world-primary disabled:cursor-not-allowed disabled:opacity-40"
           disabled={disabled}
           aria-label={t("a11y.increaseQuantity")}
           onClick={() => onUpdateQuantity(item.quantity + 1)}
@@ -54,14 +57,14 @@ export function CartLineItem({
         </button>
         <button
           type="button"
-          className="shop-line-item__remove"
+          className="cursor-pointer border-none bg-transparent px-3 py-2 text-sm text-world-text-muted underline underline-offset-[3px] transition-colors duration-150 hover:text-world-text disabled:cursor-not-allowed"
           disabled={disabled}
           onClick={onRemove}
         >
           {t("common.remove")}
         </button>
       </div>
-      <span className="shop-line-item__total">
+      <span className="font-mono text-end text-sm text-world-text max-[48rem]:text-start">
         {lineTotal.toLocaleString()} {currency}
       </span>
     </li>

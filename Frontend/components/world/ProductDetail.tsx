@@ -10,31 +10,49 @@ export function ProductDetail({ product }: { product: ProductViewModel }) {
   const labels = productCard.fieldLabels;
 
   return (
-    <section className="world-detail" aria-label={product.title}>
-      <div className="world-detail__card">
+    <section
+      className="mx-auto grid w-full max-w-[60rem] grid-cols-[minmax(0,28rem)_1fr] items-start gap-12 px-6 pt-12 pb-24 max-[40rem]:grid-cols-1"
+      aria-label={product.title}
+    >
+      <div className="max-w-[28rem]">
         <ProductCard product={product} />
       </div>
-      <aside className="world-detail__aside">
-        <Link href={`/${slug}`} className="world-detail__back">
+      <aside className="flex flex-col gap-4">
+        <Link
+          href={`/${slug}`}
+          className="self-start font-world-mono text-sm text-world-text-muted no-underline transition-colors duration-150 hover:text-world-text"
+        >
           ← {slug}
         </Link>
-        <h1 className="world-detail__title">{product.title}</h1>
-        {product.subtitle ? <p className="world-detail__subtitle">{product.subtitle}</p> : null}
-        <dl className="world-detail__meta">
+        <h1 className="font-world-heading text-4xl leading-tight text-world-text">
+          {product.title}
+        </h1>
+        {product.subtitle ? (
+          <p className="m-0 text-lg text-world-text-muted">{product.subtitle}</p>
+        ) : null}
+        <dl className="m-0 mt-2 grid gap-3">
           {product.primaryMeta ? (
             <div>
-              <dt>{labels.primaryMeta.en}</dt>
-              <dd>{product.primaryMeta}</dd>
+              <dt className="text-xs uppercase tracking-[0.08em] text-world-text-muted">
+                {labels.primaryMeta.en}
+              </dt>
+              <dd className="m-0 font-world-mono text-base text-world-text">
+                {product.primaryMeta}
+              </dd>
             </div>
           ) : null}
           {labels.secondaryMeta && product.secondaryMeta ? (
             <div>
-              <dt>{labels.secondaryMeta.en}</dt>
-              <dd>{product.secondaryMeta}</dd>
+              <dt className="text-xs uppercase tracking-[0.08em] text-world-text-muted">
+                {labels.secondaryMeta.en}
+              </dt>
+              <dd className="m-0 font-world-mono text-base text-world-text">
+                {product.secondaryMeta}
+              </dd>
             </div>
           ) : null}
         </dl>
-        <p className="world-detail__availability">
+        <p className="mt-6 font-semibold text-world-accent">
           {product.available ? copy.addToCart.en : copy.viewDetails.en}
         </p>
       </aside>

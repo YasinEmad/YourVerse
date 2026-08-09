@@ -12,16 +12,18 @@ export function SquareCardLayout({
   onAddToCart?: () => void;
 }) {
   return (
-    <article className="world-card world-card--square">
-      <div className="world-card__media-wrap">
-        <CardMedia product={product} />
-        {product.badge ? <CardTag>{product.badge}</CardTag> : null}
-      </div>
-      <h3 className="world-card__title">{product.title}</h3>
-      {product.primaryMeta ? <p className="world-card__subtitle">{product.primaryMeta}</p> : null}
-      <footer className="world-card__foot">
+    <article className="flex flex-col items-center gap-3 rounded-world border border-world-border bg-world-surface p-6 text-center text-world-text">
+      <CardMedia product={product} className="w-full max-w-[10rem]" />
+      {product.badge ? <CardTag>{product.badge}</CardTag> : null}
+      <h3 className="font-world-heading text-lg leading-snug text-world-text">{product.title}</h3>
+      {product.primaryMeta ? (
+        <p className="m-0 text-sm text-world-text-muted">{product.primaryMeta}</p>
+      ) : null}
+      <footer className="mt-auto flex w-full items-center justify-between gap-4">
         <CardPrice product={product} />
-        <CardCta disabled={!product.available} onClick={onAddToCart}>{labels.ctaLabel.en}</CardCta>
+        <CardCta disabled={!product.available} onClick={onAddToCart}>
+          {labels.ctaLabel.en}
+        </CardCta>
       </footer>
     </article>
   );

@@ -175,5 +175,13 @@
       "silver": "Silver",
       "gold": "Gold"
     }
+  },
+  "portal": {
+    "eyebrow": "One brand · Six universes",
+    "title": "Choose your universe.",
+    "tagline": "Every world is its own place. One cart, one checkout, one identity — six doors.",
+    "worldsLabel": "Enter another universe",
+    "enter": "Enter universe",
+    "footer": "Yourverse — a portal, not a marketplace."
   }
 }

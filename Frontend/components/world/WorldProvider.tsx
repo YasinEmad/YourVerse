@@ -18,7 +18,11 @@ export function WorldProvider({
 
   return (
     <WorldConfigContext.Provider value={config}>
-      <div data-world={config.slug} style={themeVars} className="world-root">
+      <div
+        data-world={config.slug}
+        style={themeVars}
+        className="min-h-dvh bg-world-bg font-world-body text-world-text [color-scheme:var(--world-color-scheme)]"
+      >
         {children}
       </div>
     </WorldConfigContext.Provider>

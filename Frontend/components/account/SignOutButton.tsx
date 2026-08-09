@@ -26,7 +26,7 @@ export function SignOutButton() {
   return (
     <button
       type="button"
-      className="account-nav__link"
+      className="inline-flex cursor-pointer items-center gap-2 rounded-world border border-world-border bg-transparent px-3 py-2 text-sm text-world-text-muted transition-colors duration-150 enabled:hover:border-world-primary enabled:hover:text-world-text disabled:cursor-not-allowed disabled:opacity-50"
       disabled={signingOut}
       onClick={() => void handleSignOut()}
     >

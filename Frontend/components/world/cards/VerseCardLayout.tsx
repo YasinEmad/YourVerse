@@ -12,20 +12,26 @@ export function VerseCardLayout({
   onAddToCart?: () => void;
 }) {
   return (
-    <article className="world-card world-card--verse">
-      <span className="world-card__era">
+    <article className="flex flex-col items-center gap-3 rounded-world border border-world-border bg-world-surface p-6 text-center text-world-text">
+      <span className="font-world-mono text-xs uppercase tracking-[0.1em] text-world-text-muted">
         {labels.primaryMeta.en}: {product.primaryMeta ?? "—"}
       </span>
-      <h3 className="world-card__verse">{product.title}</h3>
-      {product.subtitle ? <p className="world-card__subtitle">{product.subtitle}</p> : null}
+      <h3 className="m-0 font-world-heading text-2xl leading-relaxed text-world-text [direction:rtl]">
+        {product.title}
+      </h3>
+      {product.subtitle ? (
+        <p className="m-0 text-sm text-world-text-muted">{product.subtitle}</p>
+      ) : null}
       {labels.secondaryMeta && product.secondaryMeta ? (
-        <span className="world-card__meter">
+        <span className="text-sm text-world-text-muted">
           {labels.secondaryMeta.en}: {product.secondaryMeta}
         </span>
       ) : null}
-      <footer className="world-card__foot world-card__foot--center">
+      <footer className="mt-auto flex items-center justify-center gap-4">
         <CardPrice product={product} />
-        <CardCta disabled={!product.available} onClick={onAddToCart}>{labels.ctaLabel.en}</CardCta>
+        <CardCta disabled={!product.available} onClick={onAddToCart}>
+          {labels.ctaLabel.en}
+        </CardCta>
       </footer>
     </article>
   );

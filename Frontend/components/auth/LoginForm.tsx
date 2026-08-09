@@ -45,10 +45,12 @@ export function LoginForm() {
   };
 
   return (
-    <div className="auth-card">
-      <h1 className="auth-card__title">{t("auth.loginTitle")}</h1>
+    <div className="grid w-full max-w-[26rem] gap-6 rounded-world border border-world-border bg-world-surface p-8">
+      <h1 className="font-heading m-0 text-3xl leading-tight text-world-text">
+        {t("auth.loginTitle")}
+      </h1>
       <form
-        className="auth-form"
+        className="grid gap-4"
         onSubmit={(event) => {
           event.preventDefault();
           void handleSubmit();
@@ -74,21 +76,28 @@ export function LoginForm() {
           autoComplete="current-password"
         />
         {error ? (
-          <p className="shop-error" role="alert">
+          <p className="mt-4 font-semibold text-world-accent" role="alert">
             {error}
           </p>
         ) : null}
-        <button className="world-button auth-form__submit" type="submit" disabled={submitting}>
+        <button
+          className="inline-flex w-full cursor-pointer items-center justify-center rounded-world border border-world-primary bg-world-primary px-4 py-2 text-sm font-semibold text-world-bg transition-[opacity,transform] duration-150 hover:-translate-y-px hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45"
+          type="submit"
+          disabled={submitting}
+        >
           {submitting ? t("common.loading") : t("auth.login")}
         </button>
       </form>
-      <p className="auth-link-row">
+      <p className="m-0 text-sm text-world-text-muted">
         {t("auth.noAccount")}{" "}
-        <Link href="/register" className="auth-link">
+        <Link href="/register" className="text-world-text underline underline-offset-[3px] transition-colors duration-150 hover:text-world-primary">
           {t("auth.createOne")}
         </Link>
       </p>
-      <Link href="/" className="auth-link">
+      <Link
+        href="/"
+        className="text-world-text underline underline-offset-[3px] transition-colors duration-150 hover:text-world-primary"
+      >
         {t("auth.backToStore")}
       </Link>
     </div>

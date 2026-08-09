@@ -11,15 +11,24 @@ export function ShopHeader() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <header className="shop-header">
-      <Link href="/" className="shop-header__brand">
+    <header className="sticky top-0 z-sticky flex items-center gap-6 border-b border-world-border bg-[color:color-mix(in_srgb,var(--world-bg)_88%,transparent)] px-6 py-4 backdrop-blur">
+      <Link
+        href="/"
+        className="font-heading text-world-text no-underline me-auto font-bold tracking-[0.02em]"
+      >
         Multiverse Store
       </Link>
-      <nav className="shop-header__nav" aria-label={t("nav.storeNavigation")}>
-        <Link href="/cart" className="shop-header__link">
+      <nav className="flex items-center gap-6" aria-label={t("nav.storeNavigation")}>
+        <Link
+          href="/cart"
+          className="text-world-text-muted no-underline transition-colors duration-150 hover:text-world-text"
+        >
           {t("nav.cart")}
         </Link>
-        <Link href="/account" className="shop-header__link">
+        <Link
+          href="/account"
+          className="text-world-text-muted no-underline transition-colors duration-150 hover:text-world-text"
+        >
           {t("nav.account")}
         </Link>
       </nav>

@@ -29,15 +29,21 @@ export function AchievementBadge({
     : t("achievements.locked");
 
   return (
-    <li className={`achievement-card${unlocked ? "" : " is-locked"}`}>
+    <li
+      className={`grid gap-2 rounded-world border border-world-border bg-world-surface p-4${
+        unlocked ? "" : " opacity-55"
+      }`}
+    >
       {icon ? (
-        <span className="achievement-card__icon" aria-hidden="true">
+        <span className="text-3xl leading-none text-world-accent" aria-hidden="true">
           {icon}
         </span>
       ) : null}
-      <h3 className="achievement-card__title">{title}</h3>
-      {description ? <p className="achievement-card__description">{description}</p> : null}
-      <p className="achievement-card__meta">{earnedLabel}</p>
+      <h3 className="font-heading m-0 text-base text-world-text">{title}</h3>
+      {description ? (
+        <p className="m-0 text-sm text-world-text-muted">{description}</p>
+      ) : null}
+      <p className="m-0 text-xs text-world-text-muted">{earnedLabel}</p>
     </li>
   );
 }

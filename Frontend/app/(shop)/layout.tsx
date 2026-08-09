@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 
 export default function ShopLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="shop-root">
+    <div className="shop-root min-h-dvh bg-world-bg font-body text-world-text">
       <ShopHeader />
-      <main id="main-content" className="shop-main">{children}</main>
+      <main id="main-content" className="min-h-[calc(100dvh-4.5rem)]">{children}</main>
     </div>
   );
 }

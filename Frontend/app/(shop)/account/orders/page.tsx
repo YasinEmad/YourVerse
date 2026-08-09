@@ -17,10 +17,15 @@ export default async function OrdersPage() {
   const { items } = await getOrders();
 
   return (
-    <div className="shop-page__inner">
-      <h1 className="shop-page__title">{dict.orders.title}</h1>
+    <div className="mx-auto w-full max-w-[60rem] px-6 pt-12 pb-24">
+      <h1 className="font-heading m-0 mb-8 text-4xl leading-tight text-world-text">
+        {dict.orders.title}
+      </h1>
       <OrderHistoryList orders={items} t={t} locale={locale} />
-      <Link href="/account" className="account-back-link">
+      <Link
+        href="/account"
+        className="mt-8 inline-flex items-center gap-2 rounded-world border border-world-border bg-transparent px-3 py-2 text-sm text-world-text-muted no-underline transition-colors duration-150 hover:border-world-primary hover:text-world-text"
+      >
         {dict.orders.backToAccount}
       </Link>
     </div>

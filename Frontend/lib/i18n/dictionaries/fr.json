@@ -175,5 +175,13 @@
       "silver": "Argent",
       "gold": "Or"
     }
+  },
+  "portal": {
+    "eyebrow": "Une marque · Six univers",
+    "title": "Choisissez votre univers.",
+    "tagline": "Chaque univers est un lieu à part entière. Un panier, un paiement, une identité — six portes.",
+    "worldsLabel": "Entrer dans un autre univers",
+    "enter": "Entrer dans l'univers",
+    "footer": "Yourverse — un portail, pas une marketplace."
   }
 }

@@ -11,7 +11,7 @@ export function CartToggleButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       type="button"
-      className="shop-cart-button"
+      className="relative inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-world border border-world-border bg-transparent text-world-text transition-[border-color,color] duration-150 hover:border-world-primary hover:text-world-primary"
       aria-label={count > 0 ? t("a11y.cartItemCount", { count }) : t("a11y.openCart")}
       onClick={onClick}
     >
@@ -24,7 +24,11 @@ export function CartToggleButton({ onClick }: { onClick: () => void }) {
         <circle cx="9" cy="20" r="1.4" fill="currentColor" />
         <circle cx="16" cy="20" r="1.4" fill="currentColor" />
       </svg>
-      {count > 0 ? <span className="shop-cart-button__count">{count}</span> : null}
+      {count > 0 ? (
+        <span className="absolute -top-[0.4rem] -end-[0.4rem] inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-world-primary px-1 text-xs font-bold text-world-bg">
+          {count}
+        </span>
+      ) : null}
     </button>
   );
 }

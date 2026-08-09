@@ -20,10 +20,12 @@ export function FormField({
   placeholder,
 }: FormFieldProps) {
   return (
-    <label className="shop-field">
-      <span className="shop-field__label">{label}</span>
+    <label className="flex flex-col gap-1">
+      <span className="text-sm text-world-text-muted">{label}</span>
       <input
-        className={`shop-field__input${error ? " has-error" : ""}`}
+        className={`rounded-world border border-world-border bg-world-surface px-3 py-2 text-base text-world-text focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-world-primary${
+          error ? " border-world-accent" : ""
+        }`}
         name={name}
         type={type}
         value={value}
@@ -31,7 +33,7 @@ export function FormField({
         placeholder={placeholder}
         onChange={(event) => onChange(event.target.value)}
       />
-      {error ? <span className="shop-field__error">{error}</span> : null}
+      {error ? <span className="text-xs text-world-accent">{error}</span> : null}
     </label>
   );
 }

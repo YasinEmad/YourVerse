@@ -17,20 +17,27 @@ export function LootCardLayout({
     : undefined;
 
   return (
-    <article className="world-card world-card--loot" style={style}>
-      <div className="world-card__media-wrap">
+    <article
+      className="flex flex-col gap-3 rounded-world border border-world-border bg-world-surface p-6 text-world-text"
+      style={style}
+    >
+      <div className="relative">
         <CardMedia product={product} />
-        <span className="world-card__rarity">{product.primaryMeta ?? "—"}</span>
+        <span className="absolute bottom-2 start-2 rounded-world bg-[color:color-mix(in_srgb,var(--card-accent,var(--world-primary))_22%,transparent)] px-2 py-1 text-xs uppercase tracking-[0.08em] text-world-text">
+          {product.primaryMeta ?? "—"}
+        </span>
       </div>
-      <h3 className="world-card__title">{product.title}</h3>
+      <h3 className="font-world-heading text-lg leading-snug text-world-text">{product.title}</h3>
       {labels.secondaryMeta && product.secondaryMeta ? (
-        <span className="world-card__stock">
+        <span className="font-world-mono text-xs text-world-text-muted">
           {labels.secondaryMeta.en}: {product.secondaryMeta}
         </span>
       ) : null}
-      <footer className="world-card__foot">
+      <footer className="mt-auto flex items-center justify-between gap-4">
         <CardPrice product={product} />
-        <CardCta disabled={!product.available} onClick={onAddToCart}>{labels.ctaLabel.en}</CardCta>
+        <CardCta disabled={!product.available} onClick={onAddToCart}>
+          {labels.ctaLabel.en}
+        </CardCta>
       </footer>
     </article>
   );

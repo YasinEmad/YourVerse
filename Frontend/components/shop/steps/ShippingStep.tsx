@@ -32,9 +32,11 @@ export function ShippingStep({ value, onChange, onSubmit }: CheckoutStepProps) {
   };
 
   return (
-    <fieldset className="shop-step">
-      <legend className="shop-step__title">{t("checkout.shippingTitle")}</legend>
-      <div className="shop-grid">
+    <fieldset className="m-0 border-none p-0">
+      <legend className="font-heading m-0 mb-6 text-2xl text-world-text">
+        {t("checkout.shippingTitle")}
+      </legend>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,16rem),1fr))] gap-4">
         <FormField
           label={t("checkout.shippingFields.fullName")}
           name="fullName"
@@ -106,7 +108,11 @@ export function ShippingStep({ value, onChange, onSubmit }: CheckoutStepProps) {
           autoComplete="country"
         />
       </div>
-      <button className="world-button shop-step__submit" type="button" onClick={handleSubmit}>
+      <button
+        className="mt-8 inline-flex cursor-pointer items-center justify-center rounded-world border border-world-primary bg-world-primary px-4 py-2 text-sm font-semibold text-world-bg transition-[opacity,transform] duration-150 hover:-translate-y-px hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45"
+        type="button"
+        onClick={handleSubmit}
+      >
         {t("common.continue")}
       </button>
     </fieldset>
