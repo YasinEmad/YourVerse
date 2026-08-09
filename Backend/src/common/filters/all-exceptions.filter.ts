@@ -1,6 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Logger } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import type { Request, Response } from "express";
+import { MissingSessionException } from "../errors/missing-session.exception";
 
 export interface ApiErrorBody {
   statusCode: number;
@@ -11,6 +12,11 @@ export interface ApiErrorBody {
 // Produces the consistent { statusCode, message, error } error shape for every
 // unhandled response. `message` is always a string (the frontend client reads
 // body.message; arrays from validation failures are reduced to the first item).
+//
+// One deliberate exception: MissingSessionException is serialized as the mock's
+// exact { error: "Missing session" } body (see app/api/mock/cart/items/route.ts)
+// so the frontend's existing cart error handling sees the same payload it does
+// today.
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
@@ -19,6 +25,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
+
+    if (exception instanceof MissingSessionException) {
+      response.status(400).json({ error: exception.message });
+      return;
+    }
+
     const { statusCode, message, error } = this.toApiError(exception);
 
     if (statusCode >= 500) {

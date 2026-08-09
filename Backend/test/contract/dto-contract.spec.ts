@@ -8,6 +8,7 @@ import {
   toProductListItemDto,
 } from "../../src/catalog/product.mapper";
 import { toWorldDetailDto, toWorldSummaryDto, WorldRow } from "../../src/worlds/world.mapper";
+import { CartRow, toCartDto } from "../../src/cart/cart.mapper";
 
 // ---------------------------------------------------------------------------
 // Contract fixture-diff test.
@@ -295,6 +296,18 @@ const fullWorldRow: WorldRow = {
   isActive: true,
 };
 
+const fullCartRow: CartRow = {
+  id: "cart-1a2b3c4d-5e6f-7890-abcd-ef1234567890",
+  sessionId: "9f8e7d6c-5b4a-3210-fedc-ba9876543210",
+  items: [
+    {
+      id: "line-00000000-0000-4000-8000-000000000001",
+      quantity: 2,
+      product: { slug: "the-one-hoodie", baseTitle: "Mono Hoodie", basePrice: 8900, currency: "USD" },
+    },
+  ],
+};
+
 const backendSamples: Array<{ name: string; value: unknown }> = [
   { name: "WorldSummaryDto", value: toWorldSummaryDto(fullWorldRow) },
   {
@@ -313,6 +326,8 @@ const backendSamples: Array<{ name: string; value: unknown }> = [
   // The no-world base view is intentionally a partial ProductViewModel; comparing
   // against ProductViewModel asserts it never emits fields the contract doesn't know.
   { name: "ProductViewModel", value: toBaseProductDetailDto(fullProductRow) },
+  { name: "CartDto", value: toCartDto(fullCartRow) },
+  { name: "CartItemDto", value: toCartDto(fullCartRow).items[0] },
 ];
 
 describe("DTO contract vs Frontend/lib/api/types.ts", () => {

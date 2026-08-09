@@ -1,9 +1,9 @@
-// Yourverse — Phase 0 data model.
+// Yourverse — Phase 1 data model.
 //
-// Only the three read models needed by the Worlds + Catalog modules are defined.
-// Cart/Order/User/Loyalty/Drop models are intentionally NOT here yet — later
-// phases add them, and adding them now would let this schema drift from what
-// those phases actually need (see backend-architecture.md §4).
+// Worlds + Catalog (Phase 0) read models, plus the Cart models added in
+// Phase 1 (cart module). Order/User/Loyalty/Drop models are NOT here yet —
+// later phases add them, and adding them now would let this schema drift from
+// what those phases actually need (see backend-architecture.md §4).
 //
 // NOTE (contract-driven columns): the World/Product/PWP models below follow
 // backend-architecture.md §4, with three small additions required by the
@@ -43,6 +43,7 @@ model Product {
   createdAt DateTime @default(now())
 
   presentations ProductWorldPresentation[]
+  cartItems     CartItem[]
 }
 
 // The per-world "skin" of a product: what ProductCard actually renders.
@@ -68,4 +69,30 @@ model ProductWorldPresentation {
 
   @@unique([productId, worldId])
   @@index([worldId, isAvailable, sortWeight])
+}
+
+// A guest (or, Phase 4+, logged-in) shopping cart. Exactly as in
+// backend-architecture.md §4: one cart per session, userId nullable until auth
+// exists. Postgres is the source of truth; the cart:{sessionId} Redis key only
+// caches the hydrated CartDto in front of it (architecture §6).
+model Cart {
+  id        String   @id @default(cuid())
+  sessionId String   @unique // guest session id (signed), or userId once merged
+  userId    String?  @unique // Phase 4 wires the User relation; sessionId-only carts suffice here
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items CartItem[]
+}
+
+model CartItem {
+  id        String @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int
+
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId])
 }

@@ -25,6 +25,9 @@ export class AppConfigService {
   readonly redisUrl: string;
   readonly corsOrigins: string[];
   readonly cacheTtlSeconds: number;
+  readonly sessionSigningSecret: string;
+  readonly sessionTtlDays: number;
+  readonly cartCacheTtlSeconds: number;
 
   constructor(configService: ConfigService) {
     this.nodeEnv = configService.get<string>("NODE_ENV") ?? "development";
@@ -33,5 +36,8 @@ export class AppConfigService {
     this.redisUrl = configService.getOrThrow<string>("REDIS_URL");
     this.corsOrigins = parseList(configService.get<string>("CORS_ORIGINS"), ["http://localhost:3000"]);
     this.cacheTtlSeconds = toPositiveInt(configService.get<string>("CACHE_TTL_SECONDS"), 30);
+    this.sessionSigningSecret = configService.getOrThrow<string>("SESSION_SIGNING_SECRET");
+    this.sessionTtlDays = toPositiveInt(configService.get<string>("SESSION_TTL_DAYS"), 30);
+    this.cartCacheTtlSeconds = toPositiveInt(configService.get<string>("CART_CACHE_TTL_SECONDS"), 60);
   }
 }
