@@ -7,9 +7,9 @@ import { CreateOrderRequestDto } from "./dto/create-order-request.dto";
 import { OrderDto, OrderListResponseDto } from "./dto/order.dto";
 import { OrdersService } from "./orders.service";
 
-// Orders routes accept guest (or, Phase 4+, authenticated) sessions — never
-// behind the global auth guard (architecture §7), same as cart/. Every handler
-// resolves "whose orders are these" through GuestSessionService.resolveSessionOrUser.
+// Orders routes accept guest (or authenticated) sessions — never behind the
+// global auth guard (architecture §7), same as cart/. Every handler resolves
+// "whose orders are these" through GuestSessionService.resolveSessionOrUser.
 //
 // Request shape is deliberately minimal (architecture rule 3): shippingAddress
 // only. No cartId (the server derives the cart from the session), no
@@ -31,9 +31,11 @@ export class OrdersController {
     @Res({ passthrough: true }) res: Response,
     @Body() body: CreateOrderRequestDto,
   ): Promise<OrderDto> {
-    const sessionId = await this.requireGuestSession(req);
-    this.guestSession.ensureSessionCookie(res, sessionId);
-    return this.ordersService.createOrder(sessionId, body.shippingAddress);
+    const { key, kind } = await this.requireOrderKey(req);
+    this.ensureGuestCookie(res, kind, key);
+    return this.ordersService.createOrder(key, body.shippingAddress, {
+      userId: kind === "user" ? key : undefined,
+    });
   }
 
   @Get()
@@ -42,9 +44,9 @@ export class OrdersController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<OrderListResponseDto> {
-    const sessionId = await this.requireGuestSession(req);
-    this.guestSession.ensureSessionCookie(res, sessionId);
-    const orders = await this.ordersService.listOrders(sessionId);
+    const { key, kind } = await this.requireOrderKey(req);
+    this.ensureGuestCookie(res, kind, key);
+    const orders = await this.ordersService.listOrders(key);
     return { items: orders };
   }
 
@@ -54,20 +56,30 @@ export class OrdersController {
     // No resolvable session -> can't establish ownership -> 404, never a 5xx
     // and never an existence leak for someone else's order.
     const resolution = await this.guestSession.resolveSessionOrUser(req);
-    if (!resolution || resolution.kind !== "guest") {
+    if (!resolution) {
       throw new NotFoundException("Order not found");
     }
-    return this.ordersService.getOrderForSession(resolution.sessionId, id);
+    const key = resolution.kind === "user" ? resolution.userId : resolution.sessionId;
+    return this.ordersService.getOrderForSession(key, id);
   }
 
   // Missing/invalid session on POST/GET /orders -> 400 { error: "Missing
   // session" }, exactly the mock's behavior (app/api/mock/orders/route.ts) so
-  // the frontend's existing error handling doesn't change.
-  private async requireGuestSession(req: Request): Promise<string> {
+  // the frontend's existing error handling doesn't change. User-kind
+  // resolutions route by userId (the order's sessionId once authenticated).
+  private async requireOrderKey(req: Request): Promise<{ key: string; kind: "guest" | "user" }> {
     const resolution = await this.guestSession.resolveSessionOrUser(req);
-    if (resolution?.kind === "guest") {
-      return resolution.sessionId;
+    if (!resolution) {
+      throw new MissingSessionException();
     }
-    throw new MissingSessionException();
+    return resolution.kind === "user"
+      ? { key: resolution.userId, kind: "user" }
+      : { key: resolution.sessionId, kind: "guest" };
+  }
+
+  private ensureGuestCookie(res: Response, kind: "guest" | "user", key: string): void {
+    if (kind === "guest") {
+      this.guestSession.ensureSessionCookie(res, key);
+    }
   }
 }

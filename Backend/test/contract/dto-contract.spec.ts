@@ -10,6 +10,8 @@ import {
 import { toWorldDetailDto, toWorldSummaryDto, WorldRow } from "../../src/worlds/world.mapper";
 import { CartRow, toCartDto } from "../../src/cart/cart.mapper";
 import { OrderRow, toOrderDto } from "../../src/orders/orders.mapper";
+import { UserRow } from "../../src/users/user.row";
+import { toUserDto } from "../../src/users/users.mapper";
 
 // ---------------------------------------------------------------------------
 // Contract fixture-diff test.
@@ -371,6 +373,16 @@ const fullOrderRow: OrderRow = {
   ],
 };
 
+const fullUserRow: UserRow = {
+  id: "user-1a2b3c4d-5e6f-7890-abcd-ef1234567890",
+  firebaseUid: "firebase-uid-1a2b3c4d5e6f",
+  email: "alice@yourverse.test",
+  name: "Alice",
+  favoriteWorldSlug: "poetry",
+  createdAt: new Date("2026-01-15T12:00:00.000Z"),
+  updatedAt: new Date("2026-01-15T12:00:00.000Z"),
+};
+
 const backendSamples: Array<{ name: string; value: unknown }> = [
   { name: "WorldSummaryDto", value: toWorldSummaryDto(fullWorldRow) },
   {
@@ -398,6 +410,10 @@ const backendSamples: Array<{ name: string; value: unknown }> = [
   { name: "OrderDto", value: toOrderDto(fullOrderRow) },
   { name: "OrderItemDto", value: toOrderDto(fullOrderRow).items[0] },
   { name: "OrderListResponseDto", value: { items: [toOrderDto(fullOrderRow)] } },
+  // Phase 4A: users contract joins the diff. SessionDto is the POST /users/session
+  // body; UserDto is also returned by GET /users/me.
+  { name: "UserDto", value: toUserDto(fullUserRow) },
+  { name: "SessionDto", value: { user: toUserDto(fullUserRow) } },
 ];
 
 describe("DTO contract vs Frontend/lib/api/types.ts", () => {

@@ -8,10 +8,16 @@ import { CartDto } from "./dto/cart.dto";
 import { UpdateCartItemRequestDto } from "./dto/update-cart-item-request.dto";
 import { GuestSessionService } from "./guest-session.service";
 
-// Cart routes accept guest (or, Phase 4+, authenticated) sessions — never
-// behind the global auth guard (architecture §7). Every handler resolves
-// "whose cart is this" through GuestSessionService.resolveSessionOrUser — no
-// cookie/header reading happens in this controller.
+// Cart routes accept guest AND authenticated sessions — never behind the
+// global auth guard (architecture §7). Every handler resolves "whose cart is
+// this" through GuestSessionService.resolveSessionOrUser — no cookie/header
+// reading happens in this controller. The resolved key is the signed guest
+// session id, or the User.id once authenticated (Cart.sessionId stores the
+// User.id after merge).
+//
+// The guest cookie is only re-issued for guest-kind resolutions: an
+// authenticated request already proves identity via the httpOnly session
+// cookie, so it never receives a browser-readable guest cookie.
 @Controller("cart")
 export class CartController {
   constructor(
@@ -23,6 +29,9 @@ export class CartController {
   @Public()
   async getCart(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<CartDto> {
     const resolution = await this.guestSession.resolveSessionOrUser(req);
+    if (resolution?.kind === "user") {
+      return this.cartService.getCart(resolution.userId);
+    }
     const sessionId =
       resolution?.kind === "guest" ? resolution.sessionId : this.guestSession.mintGuestSessionId();
     // Re-issue the signed cookie: upgrades a client-minted id on first contact,
@@ -38,9 +47,9 @@ export class CartController {
     @Res({ passthrough: true }) res: Response,
     @Body() body: AddCartItemRequestDto,
   ): Promise<CartDto> {
-    const sessionId = await this.requireGuestSession(req);
-    this.guestSession.ensureSessionCookie(res, sessionId);
-    return this.cartService.addItem(sessionId, body.productSlug, body.quantity ?? 1);
+    const { key, kind } = await this.requireCartKey(req);
+    this.ensureGuestCookie(res, kind, key);
+    return this.cartService.addItem(key, body.productSlug, body.quantity ?? 1);
   }
 
   @Patch("items/:lineId")
@@ -51,9 +60,9 @@ export class CartController {
     @Param("lineId") lineId: string,
     @Body() body: UpdateCartItemRequestDto,
   ): Promise<CartDto> {
-    const sessionId = await this.requireGuestSession(req);
-    this.guestSession.ensureSessionCookie(res, sessionId);
-    return this.cartService.updateItem(sessionId, lineId, body.quantity ?? 0);
+    const { key, kind } = await this.requireCartKey(req);
+    this.ensureGuestCookie(res, kind, key);
+    return this.cartService.updateItem(key, lineId, body.quantity ?? 0);
   }
 
   @Delete("items/:lineId")
@@ -63,19 +72,28 @@ export class CartController {
     @Res({ passthrough: true }) res: Response,
     @Param("lineId") lineId: string,
   ): Promise<CartDto> {
-    const sessionId = await this.requireGuestSession(req);
-    this.guestSession.ensureSessionCookie(res, sessionId);
-    return this.cartService.removeItem(sessionId, lineId);
+    const { key, kind } = await this.requireCartKey(req);
+    this.ensureGuestCookie(res, kind, key);
+    return this.cartService.removeItem(key, lineId);
   }
 
   // Missing/invalid session on a mutation -> 400 "Missing session", exactly the
   // mock's behavior (app/api/mock/cart/items/route.ts) so the frontend's error
-  // handling doesn't change. Phase 4 user-kind resolutions route by userId here.
-  private async requireGuestSession(req: Request): Promise<string> {
+  // handling doesn't change. User-kind resolutions route by userId (the merged
+  // cart's sessionId), guest-kind by the guest session id.
+  private async requireCartKey(req: Request): Promise<{ key: string; kind: "guest" | "user" }> {
     const resolution = await this.guestSession.resolveSessionOrUser(req);
-    if (resolution?.kind === "guest") {
-      return resolution.sessionId;
+    if (!resolution) {
+      throw new MissingSessionException();
     }
-    throw new MissingSessionException();
+    return resolution.kind === "user"
+      ? { key: resolution.userId, kind: "user" }
+      : { key: resolution.sessionId, kind: "guest" };
+  }
+
+  private ensureGuestCookie(res: Response, kind: "guest" | "user", key: string): void {
+    if (kind === "guest") {
+      this.guestSession.ensureSessionCookie(res, key);
+    }
   }
 }

@@ -170,6 +170,59 @@ export class CartService {
     await this.invalidateCache(sessionId);
   }
 
+  // --- authenticated-user support (Phase 4A) --------------------------------
+  //
+  // Called by UsersService on POST /users/session when the request carries a
+  // valid guest session id. Cart merging logic lives HERE — UsersService never
+  // touches Cart/CartItem rows (Phase 4A rule: "CartService remains
+  // responsible for cart merging").
+  //
+  // Case 1 — user has no cart: the guest cart ROW is reassigned (sessionId ->
+  // userId) rather than copied, so the same rows survive without duplication.
+  // Case 2 — user already has a cart: guest lines are merged in using the same
+  // increment semantics as POST /cart/items (existing lines add quantity),
+  // and the guest cart row is deleted. All of it happens in ONE transaction —
+  // a failure mid-merge leaves both carts untouched.
+  async mergeGuestCart(guestSessionId: string, userId: string): Promise<void> {
+    const guestCart = await this.prisma.cart.findUnique({
+      where: { sessionId: guestSessionId },
+      include: { items: true },
+    });
+    // No guest cart, empty guest cart, or the guest cart already being this
+    // user's cart — nothing to do.
+    if (!guestCart || guestCart.items.length === 0 || guestCart.sessionId === userId) {
+      return;
+    }
+
+    const userCart = await this.prisma.cart.findUnique({ where: { sessionId: userId } });
+
+    if (!userCart) {
+      // Case 1: transfer the guest cart to the authenticated user.
+      await this.prisma.cart.update({
+        where: { id: guestCart.id },
+        data: { sessionId: userId, userId },
+      });
+    } else {
+      // Case 2: merge quantities into the user's existing cart.
+      await this.prisma.$transaction(async (tx) => {
+        for (const item of guestCart.items) {
+          await tx.cartItem.upsert({
+            where: { cartId_productId: { cartId: userCart.id, productId: item.productId } },
+            create: { cartId: userCart.id, productId: item.productId, quantity: item.quantity },
+            update: { quantity: { increment: item.quantity } },
+          });
+        }
+        // The guest cart's own lines must go before the cart row itself —
+        // CartItem has a required FK to Cart.
+        await tx.cartItem.deleteMany({ where: { cartId: guestCart.id } });
+        await tx.cart.delete({ where: { id: guestCart.id } });
+      });
+    }
+
+    // Both keys could have been cached; drop both so the next read is fresh.
+    await this.redis.del([this.cacheKey(guestSessionId), this.cacheKey(userId)]);
+  }
+
   // --- internals -----------------------------------------------------------
 
   private cacheKey(sessionId: string): string {

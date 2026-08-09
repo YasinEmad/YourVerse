@@ -30,7 +30,16 @@ export class OrdersService {
     private readonly cartService: CartService,
   ) {}
 
-  async createOrder(sessionId: string, shippingAddress: AddressDto): Promise<OrderDto> {
+  // POST /orders — creates an order for the resolved session. `sessionId` is
+  // the guest session id for guests, or the User.id for authenticated users
+  // (Order.sessionId holds whichever, matching Cart.sessionId). `userId` is
+  // written for authenticated orders to wire the User relation (Phase 4A); it
+  // is never a lookup key — ownership lookups use sessionId.
+  async createOrder(
+    sessionId: string,
+    shippingAddress: AddressDto,
+    options: { userId?: string } = {},
+  ): Promise<OrderDto> {
     const order = await this.prisma.$transaction(async (tx) => {
       const cart = await this.cartService.getCartForOrder(sessionId, tx);
       if (cart.items.length === 0) {
@@ -42,6 +51,7 @@ export class OrdersService {
       const created = await tx.order.create({
         data: {
           sessionId,
+          ...(options.userId ? { userId: options.userId } : {}),
           status: "PENDING",
           shippingAddress: shippingAddress as unknown as Prisma.InputJsonValue,
           subtotal: totals.subtotal,

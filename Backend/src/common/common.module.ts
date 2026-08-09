@@ -1,6 +1,7 @@
 import { Global, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { AppConfigService } from "./config/app-config.service";
+import { AuthSessionService } from "./auth/auth-session.service";
 import { AllExceptionsFilter } from "./filters/all-exceptions.filter";
 import { PrismaService } from "./prisma/prisma.service";
 import { RedisService } from "./redis/redis.service";
@@ -10,7 +11,13 @@ import { RedisService } from "./redis/redis.service";
 @Global()
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],
-  providers: [AppConfigService, PrismaService, RedisService, AllExceptionsFilter],
-  exports: [AppConfigService, PrismaService, RedisService],
+  providers: [
+    AppConfigService,
+    PrismaService,
+    RedisService,
+    AuthSessionService,
+    AllExceptionsFilter,
+  ],
+  exports: [AppConfigService, PrismaService, RedisService, AuthSessionService],
 })
 export class CommonModule {}

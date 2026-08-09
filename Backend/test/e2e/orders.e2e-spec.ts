@@ -69,11 +69,20 @@ describe("Orders API (e2e)", () => {
       data: { basePrice: 2900 },
     });
 
-    // Drop every order/order-item and cart/cart-item this suite created.
-    await prisma.orderItem.deleteMany({});
-    await prisma.order.deleteMany({});
-    await prisma.cartItem.deleteMany({});
-    await prisma.cart.deleteMany({});
+    // Drop only the orders and carts this suite created (the dev DB is shared
+    // with other suites running in parallel, so never deleteMany({})).
+    await prisma.orderItem.deleteMany({
+      where: { order: { sessionId: { in: sessions } } },
+    });
+    await prisma.order.deleteMany({
+      where: { sessionId: { in: sessions } },
+    });
+    await prisma.cartItem.deleteMany({
+      where: { cart: { sessionId: { in: sessions } } },
+    });
+    await prisma.cart.deleteMany({
+      where: { sessionId: { in: sessions } },
+    });
     await redis.delByPattern("cart:*");
     jest.restoreAllMocks();
     await app.close();

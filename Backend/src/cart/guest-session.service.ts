@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { createHmac, randomUUID, timingSafeEqual } from "crypto";
 import type { Request, Response } from "express";
+import { readAuthSessionId } from "../common/auth/session-cookie";
 import { AppConfigService } from "../common/config/app-config.service";
 
 // Name of the cookie that carries the (signed) guest session id. The frontend
@@ -35,9 +36,19 @@ function isUuid(value: string): boolean {
 }
 
 /**
- * Single place that answers "whose cart is this request for?" (architecture
- * rule 1). Precedence: a valid JWT cookie if present, otherwise the guest
- * session id from the x-session-id header, then the yourverse-session cookie.
+ * Single place that answers "whose cart/orders is this request for?"
+ * (architecture rule 1). Precedence:
+ *
+ *   1. a valid authenticated backend session (httpOnly `yourverse-auth`
+ *      cookie) -> { kind: "user", userId } — resolved through the SHARED
+ *      auth-session verification in common/auth/session-cookie.ts, so the
+ *      guard and every cart/orders handler agree on who is authenticated;
+ *   2. otherwise the guest session id from the x-session-id header, then the
+ *      yourverse-session cookie -> { kind: "guest", sessionId }.
+ *
+ * This is the ONLY identity-resolution mechanism cart/, orders/ and users/
+ * use for deciding "guest or user" — the logic is never duplicated in a
+ * controller or service (Phase 4A rule).
  *
  * CUTOVER CONTRACT (backend-architecture.md §6 / §15, deliberately not buried):
  * the frontend today mints an UNSIGNED client-side UUID (crypto.randomUUID in
@@ -55,9 +66,8 @@ export class GuestSessionService {
   constructor(private readonly config: AppConfigService) {}
 
   async resolveSessionOrUser(req: Request): Promise<SessionResolution | null> {
-    // 1. JWT cookie beats the guest id (architecture §7). Phase 4 wires the
-    //    real verification; until then there is no auth, so this never resolves.
-    const userId = await this.tryResolveUserIdFromJwt(req);
+    // 1. Authenticated backend session beats the guest id (architecture §7).
+    const userId = readAuthSessionId(req, this.config.sessionSigningSecret);
     if (userId) {
       return { kind: "user", userId };
     }
@@ -83,6 +93,20 @@ export class GuestSessionService {
     return randomUUID();
   }
 
+  // The guest session id carried by the request, IGNORING the authenticated
+  // session. Used by POST /users/session: a re-login request already carries
+  // the auth cookie, so auth-first resolution would hide the guest id — but the
+  // guest cart must still be found and merged. Only a well-formed guest id
+  // (signed, or an unsigned client-minted UUID per the cutover contract)
+  // counts; anything else is "no guest cart" rather than an error.
+  readGuestSessionId(req: Request): string | null {
+    const raw = this.readSessionId(req);
+    if (!raw) {
+      return null;
+    }
+    return this.verifySignedSessionId(raw) ?? (isUuid(raw) ? raw : null);
+  }
+
   // Sets (or re-issues) the signed session cookie. Always called when the route
   // has a resolved session: it upgrades client-minted ids on first contact and
   // keeps the cookie current for every request.
@@ -97,13 +121,6 @@ export class GuestSessionService {
   }
 
   // --- internals -----------------------------------------------------------
-
-  // Phase 4: verify the access_token cookie and return the user's id. There is
-  // no User/JWT implementation yet, so this is a placeholder that preserves the
-  // "JWT first, guest id second" precedence in the resolution function.
-  private async tryResolveUserIdFromJwt(_req: Request): Promise<string | null> {
-    return null;
-  }
 
   // Header wins over the cookie; the frontend sends both (header from the
   // cookie value), and a freshly re-signed cookie may not have reached the

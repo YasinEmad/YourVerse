@@ -28,6 +28,8 @@ export class AppConfigService {
   readonly sessionSigningSecret: string;
   readonly sessionTtlDays: number;
   readonly cartCacheTtlSeconds: number;
+  readonly firebaseProjectId?: string;
+  readonly firebaseServiceAccount?: string;
 
   constructor(configService: ConfigService) {
     this.nodeEnv = configService.get<string>("NODE_ENV") ?? "development";
@@ -39,5 +41,16 @@ export class AppConfigService {
     this.sessionSigningSecret = configService.getOrThrow<string>("SESSION_SIGNING_SECRET");
     this.sessionTtlDays = toPositiveInt(configService.get<string>("SESSION_TTL_DAYS"), 30);
     this.cartCacheTtlSeconds = toPositiveInt(configService.get<string>("CART_CACHE_TTL_SECONDS"), 60);
+    // Firebase Admin (Phase 4A). Optional: without credentials the SDK falls
+    // back to GOOGLE_APPLICATION_CREDENTIALS / the GCE metadata server.
+    this.firebaseProjectId = this.optionalString(configService.get<string>("FIREBASE_PROJECT_ID"));
+    this.firebaseServiceAccount = this.optionalString(
+      configService.get<string>("FIREBASE_SERVICE_ACCOUNT"),
+    );
+  }
+
+  private optionalString(value: string | undefined): string | undefined {
+    const trimmed = value?.trim();
+    return trimmed ? trimmed : undefined;
   }
 }

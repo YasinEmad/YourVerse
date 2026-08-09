@@ -1,9 +1,8 @@
-// Yourverse — Phase 2 data model.
+// Yourverse data model.
 //
-// Worlds + Catalog (Phase 0) read models and the Cart models (Phase 1), plus
-// the Order/OrderItem models added in Phase 2 (orders module). User/Loyalty/
-// Drop models are NOT here yet — later phases add them (see
-// backend-architecture.md §4).
+// Worlds + Catalog (Phase 0) read models, Cart (Phase 1), Order/OrderItem
+// (Phase 2), and the application User (Phase 4A). Loyalty/Drop models are NOT
+// here yet — later phases add them (see backend-architecture.md §4).
 //
 // DISCREPANCY vs backend-architecture.md §4 (COD-only decision, Phase 2): the
 // architecture doc's Order model originally carried a required
@@ -81,18 +80,25 @@ model ProductWorldPresentation {
   @@index([worldId, isAvailable, sortWeight])
 }
 
-// A guest (or, Phase 4+, logged-in) shopping cart. Exactly as in
-// backend-architecture.md §4: one cart per session, userId nullable until auth
-// exists. Postgres is the source of truth; the cart:{sessionId} Redis key only
-// caches the hydrated CartDto in front of it (architecture §6).
+// A guest (or authenticated) shopping cart. Exactly as in backend-architecture.md
+// §4: one cart per session, userId nullable until auth exists. Postgres is the
+// source of truth; the cart:{sessionId} Redis key only caches the hydrated
+// CartDto in front of it (architecture §6).
+//
+// sessionId is the operational key used by every CartService read/write: it
+// holds the signed guest session id for guests, and the User.id once a guest
+// authenticates and their cart is transferred/merged (see CartService.mergeGuestCart).
+// userId is set at the same time to wire the User relation for the (future)
+// loyalty/account modules — it is never used as a lookup key on its own.
 model Cart {
   id        String   @id @default(cuid())
-  sessionId String   @unique // guest session id (signed), or userId once merged
-  userId    String?  @unique // Phase 4 wires the User relation; sessionId-only carts suffice here
+  sessionId String   @unique // guest session id (signed), or User.id once merged
+  userId    String?  @unique // Phase 4: wired to User on authentication
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   items CartItem[]
+  user  User?    @relation(fields: [userId], references: [id])
 }
 
 model CartItem {
@@ -118,8 +124,8 @@ model CartItem {
 // never supplies subtotal/shipping/tax/total.
 model Order {
   id              String      @id @default(cuid())
-  sessionId       String // guest session at time of purchase; Phase 4 adds the userId lookup path
-  userId          String? // Phase 4 wires the User relation
+  sessionId       String // guest session at time of purchase, or User.id once authenticated
+  userId          String? // Phase 4: wired to the User relation when the order is placed authenticated
   status          OrderStatus @default(PENDING) // every order starts PENDING; COD, no charge step
   shippingAddress Json // AddressDto
   subtotal        Int // cents
@@ -130,6 +136,7 @@ model Order {
   createdAt       DateTime    @default(now())
 
   items OrderItem[]
+  user  User?      @relation(fields: [userId], references: [id])
 }
 
 // A line on an order. unitPrice is captured at purchase time and NEVER
@@ -167,4 +174,22 @@ enum OrderStatus {
   PAID
   FULFILLED
   CANCELLED
+}
+
+// The application User (Phase 4A). Firebase Authentication OWNS credentials —
+// this table stores only application data keyed to the verified Firebase UID.
+// firebaseUid is the stable identity across logins; email is denormalized for
+// lookups/messages. Never store passwords, password hashes, ID tokens, or
+// access/refresh tokens here (backend-architecture.md §7).
+model User {
+  id                String   @id @default(cuid())
+  firebaseUid       String   @unique // verified Firebase UID (ID token subject)
+  email             String   @unique
+  name              String? // display name, when Firebase/profile provides one
+  favoriteWorldSlug String? // mirrors UserDto.favoriteWorld; unused by any module today
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  cart   Cart?
+  orders Order[]
 }

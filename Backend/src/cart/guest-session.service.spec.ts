@@ -28,6 +28,12 @@ function signedValueOf(sessionId: string, secret: string): string {
   return `v1.${sessionId}.${signature}`;
 }
 
+function authSessionCookieOf(userId: string, secret: string): string {
+  const { createHmac } = require("crypto") as typeof import("crypto");
+  const signature = createHmac("sha256", secret).update(userId).digest("base64url");
+  return `yourverse-auth=a1.${userId}.${signature}`;
+}
+
 describe("GuestSessionService", () => {
   it("resolves a valid signed x-session-id header without needing a resign", async () => {
     const service = makeService();
@@ -35,6 +41,34 @@ describe("GuestSessionService", () => {
       requestWith({ "x-session-id": signedValueOf(SESSION_ID, SECRET) }),
     );
     expect(resolution).toEqual({ kind: "guest", sessionId: SESSION_ID, needsResign: false });
+  });
+
+  it("resolves the authenticated user BEFORE any guest id (auth-first precedence)", async () => {
+    const service = makeService();
+    const resolution = await service.resolveSessionOrUser(
+      requestWith({
+        cookie: `${authSessionCookieOf("user-1a2b3c4d", SECRET)}; yourverse-session=${signedValueOf(SESSION_ID, SECRET)}`,
+        "x-session-id": signedValueOf(SESSION_ID, SECRET),
+      }),
+    );
+    expect(resolution).toEqual({ kind: "user", userId: "user-1a2b3c4d" });
+  });
+
+  it("reads the guest session id even when the request is authenticated (merge path)", () => {
+    const service = makeService();
+    const guestId = service.readGuestSessionId(
+      requestWith({
+        cookie: authSessionCookieOf("user-1a2b3c4d", SECRET),
+        "x-session-id": signedValueOf(SESSION_ID, SECRET),
+      }),
+    );
+    expect(guestId).toBe(SESSION_ID);
+  });
+
+  it("readGuestSessionId returns null without a well-formed guest id", () => {
+    const service = makeService();
+    expect(service.readGuestSessionId(requestWith({}))).toBeNull();
+    expect(service.readGuestSessionId(requestWith({ "x-session-id": "not-a-uuid" }))).toBeNull();
   });
 
   it("accepts an unsigned client-minted UUID but flags it for re-signing (cutover)", async () => {

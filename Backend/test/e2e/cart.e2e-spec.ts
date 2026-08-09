@@ -22,6 +22,10 @@ describe("Cart API (e2e)", () => {
   let prisma: PrismaService;
   let redis: RedisService;
 
+  // Session ids created by this suite, so afterAll can leave the DB clean
+  // without touching rows other suites created in the same dev DB.
+  const sessions: string[] = [];
+
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -37,15 +41,23 @@ describe("Cart API (e2e)", () => {
   });
 
   afterAll(async () => {
-    // Leave the dev DB clean: drop everything this suite created.
-    await prisma.cartItem.deleteMany({});
-    await prisma.cart.deleteMany({});
+    // Leave the dev DB clean: drop only the carts this suite created.
+    await prisma.cartItem.deleteMany({
+      where: { cart: { sessionId: { in: sessions } } },
+    });
+    await prisma.cart.deleteMany({
+      where: { sessionId: { in: sessions } },
+    });
     await redis.delByPattern("cart:*");
     await app.close();
   });
 
   const server = () => app.getHttpServer();
-  const freshSessionId = () => crypto.randomUUID();
+  const freshSessionId = () => {
+    const id = crypto.randomUUID();
+    sessions.push(id);
+    return id;
+  };
   const signedCookieValue = (sessionId: string) => `v1.${sessionId}.`; // signature varies
 
   describe("GET /cart", () => {
