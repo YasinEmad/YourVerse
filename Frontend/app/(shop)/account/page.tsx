@@ -7,6 +7,7 @@ import { getMockAchievements } from "@/lib/account/achievements";
 import { getLoyaltyProgress } from "@/lib/account/loyalty";
 import { LoyaltyProgressBar } from "@/components/account/LoyaltyProgressBar";
 import { AchievementBadge } from "@/components/account/AchievementBadge";
+import { SignOutButton } from "@/components/account/SignOutButton";
 
 export const dynamic = "force-dynamic";
 
@@ -88,6 +89,7 @@ export default async function AccountPage() {
         <Link href="/account/achievements" className="account-nav__link">
           {dict.account.achievements}
         </Link>
+        <SignOutButton />
       </nav>
     </div>
   );

@@ -111,15 +111,13 @@ export interface UserDto {
   loyaltyPoints: number;
 }
 
-export interface LoginRequestDto {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequestDto {
-  name: string;
-  email: string;
-  password: string;
+// POST /users/session request body (Phase 4A). Firebase owns password
+// authentication; the frontend only ever sends the short-lived Firebase ID
+// token and the backend verifies it server-side. Passwords are never sent to
+// the backend, and this request type is the only Firebase-adjacent value the
+// API layer touches — responses (SessionDto/UserDto) carry no credentials.
+export interface SessionRequestDto {
+  idToken: string;
 }
 
 export interface SessionDto {

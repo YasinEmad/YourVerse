@@ -98,7 +98,11 @@
     "invalidEmail": "Saisissez une adresse e-mail valide",
     "nameRequired": "Le nom est requis",
     "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
-    "authUnavailable": "L'authentification n'est pas encore disponible. Ce formulaire est prêt à se connecter au service d'authentification lorsqu'il sera en ligne.",
+    "invalidCredentials": "E-mail ou mot de passe incorrect.",
+    "emailInUse": "Un compte existe déjà avec cette adresse e-mail.",
+    "weakPassword": "Mot de passe trop faible. Utilisez au moins 8 caractères.",
+    "tooManyRequests": "Trop de tentatives. Réessayez plus tard.",
+    "sessionFailed": "Impossible d'ouvrir la session. Veuillez réessayer.",
     "unexpectedError": "Une erreur s'est produite. Veuillez réessayer."
   },
   "account": {

@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ApiError } from "@/lib/api/client";
-import { register } from "@/lib/api/users";
+import { authErrorMessage, registerWithEmail } from "@/lib/auth/client";
 import { useI18n } from "@/lib/i18n/locale-provider";
 import { FormField } from "@/components/shop/FormField";
 
@@ -42,20 +41,10 @@ export function RegisterForm() {
     setSubmitting(true);
     setError(null);
     try {
-      await register({
-        name: value.name.trim(),
-        email: value.email.trim(),
-        password: value.password,
-      });
+      await registerWithEmail(value.name.trim(), value.email.trim(), value.password);
       router.push("/account");
     } catch (caught) {
-      setError(
-        caught instanceof ApiError && caught.status === 501
-          ? t("auth.authUnavailable")
-          : caught instanceof Error
-            ? caught.message
-            : t("auth.unexpectedError"),
-      );
+      setError(authErrorMessage(caught, t));
     } finally {
       setSubmitting(false);
     }

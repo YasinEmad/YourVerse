@@ -98,7 +98,11 @@
     "invalidEmail": "Enter a valid email address",
     "nameRequired": "Name is required",
     "passwordMin": "Password must be at least 8 characters",
-    "authUnavailable": "Authentication is not available yet. This form is ready to connect to the authentication service when it ships.",
+    "invalidCredentials": "Invalid email or password.",
+    "emailInUse": "An account with this email already exists.",
+    "weakPassword": "Password is too weak. Use at least 8 characters.",
+    "tooManyRequests": "Too many attempts. Please try again later.",
+    "sessionFailed": "Could not start a session. Please try again.",
     "unexpectedError": "Something went wrong. Please try again."
   },
   "account": {

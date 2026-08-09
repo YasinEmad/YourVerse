@@ -64,5 +64,10 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
     throw new ApiError(response.status, message, body);
   }
 
+  // 204 No Content (e.g. POST /users/logout) has no body to parse.
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
   return response.json() as Promise<T>;
 }

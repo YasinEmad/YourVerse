@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ApiError } from "@/lib/api/client";
-import { login } from "@/lib/api/users";
+import { authErrorMessage, loginWithEmail } from "@/lib/auth/client";
 import { useI18n } from "@/lib/i18n/locale-provider";
 import { FormField } from "@/components/shop/FormField";
 
@@ -36,16 +35,10 @@ export function LoginForm() {
     setSubmitting(true);
     setError(null);
     try {
-      await login({ email: value.email.trim(), password: value.password });
+      await loginWithEmail(value.email.trim(), value.password);
       router.push("/account");
     } catch (caught) {
-      setError(
-        caught instanceof ApiError && caught.status === 501
-          ? t("auth.authUnavailable")
-          : caught instanceof Error
-            ? caught.message
-            : t("auth.unexpectedError"),
-      );
+      setError(authErrorMessage(caught, t));
     } finally {
       setSubmitting(false);
     }
