@@ -235,7 +235,12 @@ model Order {
   userId          String?
   sessionId       String      // guest session at time of purchase, for lookup pre-auth
   status          OrderStatus @default(PENDING)
-  paymentMethodId String
+  // NOTE (Phase 2 COD-only decision): the original design carried a required
+  // `paymentMethodId String` here. It is deliberately REMOVED — there is no
+  // payment gateway, every order is Cash on Delivery, so COD is an implicit
+  // fact of every order rather than a stored choice among options. If
+  // card/wallet payments ever return, a new payments/ phase reintroduces a
+  // payment-method concept on Order at that point (see §9).
   shippingAddress Json        // AddressDto
   subtotal        Int
   shipping        Int
@@ -355,7 +360,7 @@ not change; only `baseUrlResolver` moves from `/api/mock` to this backend.
 | `/cart/items` | POST | guest or user | `AddCartItemRequestDto` | `CartDto` (merges into existing line; 404 unknown/unavailable product) |
 | `/cart/items/:lineId` | PATCH | guest or user | `UpdateCartItemRequestDto` | `CartDto` (`quantity <= 0` removes the line) |
 | `/cart/items/:lineId` | DELETE | guest or user | — | `CartDto` |
-| `/orders` | POST | guest or user | `CreateOrderRequestDto` | `OrderDto` (201; validates address + payment method; clears cart) |
+| `/orders` | POST | guest or user | `CreateOrderRequestDto` | `OrderDto` (201; validates address; recomputes totals server-side; clears cart) |
 | `/orders` | GET | guest or user | header: `x-session-id` | `OrderListResponseDto` (400 without session) |
 | `/orders/:id` | GET | guest or user | — | `OrderDto` (404 if unknown, or not owned by this session/user) |
 | `/users/login` | POST | `@Public()` | `LoginRequestDto` | `SessionDto`, sets httpOnly access+refresh cookies |
@@ -443,6 +448,17 @@ event contract in `common/events/`.
 ---
 
 ## 9. Payments
+
+> **Deferred (Phase 2 decision).** There is no payment gateway in this project —
+> every order is Cash on Delivery. No `payments/` module, no
+> `PaymentProvider` interface, no charge/refund/webhook plumbing exists in the
+> codebase today, and COD is NOT a "method" stored on `Order` (see the §4
+> `paymentMethodId` note). This section is the target design FOR A FUTURE
+> PHASE only: if card/wallet payments are ever reintroduced, build this as a
+> new `payments/` module behind this interface and add a payment-method
+> concept on `Order` at that point — not before. Until then, the frontend's
+> payment-method registry (`payment-methods.tsx`) is flagged for follow-up
+> simplification to render COD only, or be removed from checkout entirely.
 
 A provider-agnostic interface, matching the frontend's already-built
 data-driven payment method registry (`payment-methods.tsx`: `card`, `wallet`,

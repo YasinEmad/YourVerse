@@ -328,6 +328,11 @@ const backendSamples: Array<{ name: string; value: unknown }> = [
   { name: "ProductViewModel", value: toBaseProductDetailDto(fullProductRow) },
   { name: "CartDto", value: toCartDto(fullCartRow) },
   { name: "CartItemDto", value: toCartDto(fullCartRow).items[0] },
+  // NOTE: OrderDto/OrderItemDto/OrderListResponseDto are deliberately NOT
+  // compared yet — the backend dropped paymentMethodId (COD-only, Phase 2)
+  // while the frontend contract still requires it. The comparison joins once
+  // the frontend's payment-method simplification lands (see
+  // components/shop/payment-methods.tsx).
 ];
 
 describe("DTO contract vs Frontend/lib/api/types.ts", () => {

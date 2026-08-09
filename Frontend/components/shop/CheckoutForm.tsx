@@ -43,6 +43,9 @@ export function CheckoutForm() {
       const payload: CreateOrderRequestDto = {
         cartId: cart.id,
         shippingAddress,
+        // TODO(follow-up): paymentMethodId is sent to the mock only; the
+        // backend ignores it (COD is implicit). Remove once the payment-method
+        // UI simplification lands (see payment-methods.tsx).
         paymentMethodId: value.paymentMethodId ?? "",
       };
       const order = await createOrder(payload);

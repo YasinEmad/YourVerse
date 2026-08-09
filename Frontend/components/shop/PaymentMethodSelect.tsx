@@ -4,6 +4,10 @@ import { getPaymentMethod, paymentMethods } from "./payment-methods";
 import type { PaymentFormProps } from "./payment-methods";
 import { useI18n } from "@/lib/i18n/locale-provider";
 
+// TODO(follow-up, Phase 2 simplification): the backend is COD-only. Until
+// payment-methods.tsx collapses to COD only, this selector misleads users by
+// offering payment options the backend cannot process. See payment-methods.tsx.
+
 export function PaymentMethodSelect({ value, onChange, errors }: PaymentFormProps) {
   const { t } = useI18n();
   const selectedId = value.paymentMethodId ?? paymentMethods[0].id;

@@ -3,6 +3,14 @@ import { CardForm } from "./payment-forms/CardForm";
 import { WalletForm } from "./payment-forms/WalletForm";
 import { CodForm } from "./payment-forms/CodForm";
 
+// TODO(follow-up, Phase 2 simplification): the backend is COD-only — there is
+// no payment gateway and OrderDto carries no paymentMethodId (see
+// backend-architecture.md §4/§9). This registry currently presents card/wallet
+// options that do not exist server-side, which is misleading. Follow-up should
+// collapse this to COD only (keep the descriptor shape, drop card/wallet), or
+// remove the payment step from checkout entirely. Card/wallet descriptors and
+// forms (CardForm/WalletForm) are retained here only until that lands.
+
 export interface PaymentFormProps {
   value: Record<string, string>;
   onChange: (value: Record<string, string>) => void;

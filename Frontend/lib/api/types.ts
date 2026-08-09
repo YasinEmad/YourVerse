@@ -68,10 +68,17 @@ export interface AddressDto {
   country: string;
 }
 
+// TODO(follow-up, Phase 2 simplification): the backend is COD-only and its
+// OrderDto deliberately DROPS paymentMethodId (backend-architecture.md §4/§9).
+// The fields flagged below are retained to keep the frontend compiling during
+// cutover but should be removed alongside the payment-method UI simplification
+// (see components/shop/payment-methods.tsx). OrderStatus also needs to match
+// the backend enum (PENDING | PAID | FULFILLED | CANCELLED) once the backend
+// starts writing more than PENDING.
 export interface CreateOrderRequestDto {
   cartId: string;
   shippingAddress: AddressDto;
-  paymentMethodId: string;
+  paymentMethodId: string; // TODO(follow-up): removed with the COD-only simplification
 }
 
 export interface OrderItemDto {
@@ -93,7 +100,7 @@ export interface OrderDto {
   tax: number;
   total: number;
   currency: string;
-  paymentMethodId: string;
+  paymentMethodId: string; // TODO(follow-up): removed with the COD-only simplification
   shippingAddress: AddressDto;
   createdAt: string;
 }

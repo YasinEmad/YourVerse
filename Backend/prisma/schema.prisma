@@ -1,9 +1,18 @@
-// Yourverse — Phase 1 data model.
+// Yourverse — Phase 2 data model.
 //
-// Worlds + Catalog (Phase 0) read models, plus the Cart models added in
-// Phase 1 (cart module). Order/User/Loyalty/Drop models are NOT here yet —
-// later phases add them, and adding them now would let this schema drift from
-// what those phases actually need (see backend-architecture.md §4).
+// Worlds + Catalog (Phase 0) read models and the Cart models (Phase 1), plus
+// the Order/OrderItem models added in Phase 2 (orders module). User/Loyalty/
+// Drop models are NOT here yet — later phases add them (see
+// backend-architecture.md §4).
+//
+// DISCREPANCY vs backend-architecture.md §4 (COD-only decision, Phase 2): the
+// architecture doc's Order model originally carried a required
+// `paymentMethodId String`. This phase deliberately DROPS it — there is no
+// payment gateway, every order is Cash on Delivery (COD), so COD is an
+// implicit fact of every order rather than a stored choice among options.
+// backend-architecture.md has been updated to match (§4/§5). If card/wallet
+// payments ever return, that is a new payments/ phase that reintroduces a
+// payment-method concept on Order — see Future Expansion Rules.
 //
 // NOTE (contract-driven columns): the World/Product/PWP models below follow
 // backend-architecture.md §4, with three small additions required by the
@@ -44,6 +53,7 @@ model Product {
 
   presentations ProductWorldPresentation[]
   cartItems     CartItem[]
+  orderItems    OrderItem[]
 }
 
 // The per-world "skin" of a product: what ProductCard actually renders.
@@ -95,4 +105,66 @@ model CartItem {
   product Product @relation(fields: [productId], references: [id])
 
   @@unique([cartId, productId])
+}
+
+// A placed order. Exactly as in backend-architecture.md §4 with ONE deliberate
+// removal: `paymentMethodId` is gone (see the schema header note) — COD is
+// implicit, there is no payment-method choice to store.
+//
+// userId is nullable until Phase 4 wires the User relation (mirrors Cart).
+// All money columns are integer minor units (cents), consistent with
+// Product.basePrice; order-totals.service.ts is the only place totals math
+// lives, and it is always recomputed from the cart at creation time — a client
+// never supplies subtotal/shipping/tax/total.
+model Order {
+  id              String      @id @default(cuid())
+  sessionId       String // guest session at time of purchase; Phase 4 adds the userId lookup path
+  userId          String? // Phase 4 wires the User relation
+  status          OrderStatus @default(PENDING) // every order starts PENDING; COD, no charge step
+  shippingAddress Json // AddressDto
+  subtotal        Int // cents
+  shipping        Int // cents
+  tax             Int // cents
+  total           Int // cents
+  currency        String      @default("USD")
+  createdAt       DateTime    @default(now())
+
+  items OrderItem[]
+}
+
+// A line on an order. unitPrice is captured at purchase time and NEVER
+// recomputed from the live Product row (rule 2) — a price change next week
+// must not alter last week's order history. title/productSlug are not stored
+// here (per §4); they are read through the Product join at DTO-mapping time,
+// which is why this relation is required even though the join is read-only.
+//
+// worldSlug records "which world's presentation the item was purchased
+// through" (§4). This phase's cart carries no world context (cart lines are
+// world-agnostic — AddCartItemRequestDto has only productSlug), so order
+// creation records a sentinel constant (NO_WORLD_SLUG in orders.service.ts)
+// rather than inventing a world. When the cart gains world context, this
+// column starts recording it without a schema change.
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  productId String
+  worldSlug String // sentinel until the cart carries world context (see above)
+  quantity  Int
+  unitPrice Int // cents, captured at purchase time — never recomputed
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+}
+
+// Exactly as backend-architecture.md §4. Note this deliberately differs from
+// the FRONTEND's lib/api/types.ts OrderStatus ("PENDING | PAID | COMPLETED |
+// CANCELLED | REFUNDED") — the architecture enum is the authority for the
+// backend, and "PENDING" is the only status this phase ever writes.
+enum OrderStatus {
+  PENDING
+  PAID
+  FULFILLED
+  CANCELLED
 }

@@ -1,3 +1,10 @@
+// CHECKOUT PREVIEW ONLY (backend-architecture.md §12): this calculator renders
+// running totals in the checkout UI before submission. It is NOT authoritative —
+// the backend's order-totals.service.ts is the single source of truth and every
+// confirmation page must render the backend's OrderDto.total, never this. This
+// file mirrors the backend's Phase 0 constants (flat $5 shipping, 10% tax,
+// cents rounding) so the preview doesn't silently diverge at cutover.
+
 export interface OrderLineInput {
   unitPrice: number;
   quantity: number;

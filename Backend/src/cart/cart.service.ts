@@ -1,9 +1,28 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import type { Prisma } from "@prisma/client";
 import { AppConfigService } from "../common/config/app-config.service";
 import { PrismaService } from "../common/prisma/prisma.service";
 import { RedisService } from "../common/redis/redis.service";
 import { toCartDto } from "./cart.mapper";
 import { CartDto } from "./dto/cart.dto";
+
+// The shape OrdersService consumes: the cart's live, un-cached state with
+// integer-cent prices, so order creation can recompute totals authoritatively
+// and snapshot unitPrice per line.
+export interface CartForOrderItem {
+  lineId: string;
+  productId: string;
+  productSlug: string;
+  title: string;
+  unitPriceCents: number;
+  quantity: number;
+}
+
+export interface CartForOrder {
+  id: string;
+  currency: string;
+  items: CartForOrderItem[];
+}
 
 // Cart reads/writes for the anonymous guest flow (Phase 4 adds the userId side).
 //
@@ -92,6 +111,63 @@ export class CartService {
     }
     await this.prisma.cartItem.deleteMany({ where: { cartId: cart.id, id: lineId } });
     return this.afterMutation(sessionId);
+  }
+
+  // --- order-creation support (Phase 2, architecture rule: the Orders module
+  // reads/writes the cart ONLY through this service, never by querying
+  // Cart/CartItem directly). Both methods accept an optional transaction
+  // client so order creation can read the cart, write the order, and clear the
+  // cart inside ONE Prisma transaction — if any step fails, nothing sticks
+  // (backend-architecture.md §4 rule 4).
+
+  // The cart's current server-side state for order creation: fresh Postgres
+  // read (never the Redis cache), with integer-cent prices and product ids so
+  // order-totals.service.ts can recompute authoritative totals and OrderItem
+  // can snapshot unitPrice at purchase time.
+  async getCartForOrder(
+    sessionId: string,
+    tx: Prisma.TransactionClient = this.prisma,
+  ): Promise<CartForOrder> {
+    const cart = await tx.cart.findUnique({
+      where: { sessionId },
+      include: {
+        items: {
+          include: { product: true },
+          orderBy: { id: "asc" },
+        },
+      },
+    });
+    if (!cart) {
+      return { id: "", currency: "USD", items: [] };
+    }
+    return {
+      id: cart.id,
+      currency: cart.items[0]?.product.currency ?? "USD",
+      items: cart.items.map((item) => ({
+        lineId: item.id,
+        productId: item.productId,
+        productSlug: item.product.slug,
+        title: item.product.baseTitle,
+        unitPriceCents: item.product.basePrice,
+        quantity: item.quantity,
+      })),
+    };
+  }
+
+  // Empties the cart's lines (the Cart row persists per session) and drops the
+  // Redis cache key so the next GET /cart reads fresh. Cache invalidation after
+  // the DB delete is harmless if the surrounding transaction rolls back — a
+  // cache miss just re-reads Postgres.
+  async clearCart(
+    sessionId: string,
+    tx: Prisma.TransactionClient = this.prisma,
+  ): Promise<void> {
+    const cart = await tx.cart.findUnique({ where: { sessionId } });
+    if (!cart) {
+      return;
+    }
+    await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+    await this.invalidateCache(sessionId);
   }
 
   // --- internals -----------------------------------------------------------

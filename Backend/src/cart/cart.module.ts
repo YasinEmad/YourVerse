@@ -9,6 +9,9 @@ import { GuestSessionService } from "./guest-session.service";
 @Module({
   controllers: [CartController],
   providers: [CartService, GuestSessionService],
-  exports: [CartService],
+  // CartService: OrdersModule reads/writes the cart through it (never direct
+  // CartItem queries). GuestSessionService: the shared "whose request is this"
+  // resolver — orders/ resolves the same way cart/ does.
+  exports: [CartService, GuestSessionService],
 })
 export class CartModule {}
