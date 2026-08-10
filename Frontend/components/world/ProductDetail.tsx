@@ -11,7 +11,7 @@ export function ProductDetail({ product }: { product: ProductViewModel }) {
 
   return (
     <section
-      className="mx-auto grid w-full max-w-[60rem] grid-cols-[minmax(0,28rem)_1fr] items-start gap-12 px-6 pt-12 pb-24 max-[40rem]:grid-cols-1"
+      className="mx-auto grid w-full max-w-[60rem] grid-cols-[minmax(0,28rem)_1fr] items-start gap-12 px-6 pt-12 pb-24 max-[640px]:grid-cols-1"
       aria-label={product.title}
     >
       <div className="max-w-[28rem]">

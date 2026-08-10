@@ -23,7 +23,7 @@ export function CartLineItem({
   const lineTotal = toLineTotal(item);
 
   return (
-    <li className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-4 rounded-world border border-world-border bg-world-surface p-4 max-[48rem]:grid-cols-1">
+    <li className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-4 rounded-world border border-world-border bg-world-surface p-4 max-[768px]:grid-cols-1">
       <div>
         <h3 className="font-heading m-0 text-base text-world-text">{item.title}</h3>
         <p className="mt-1 text-sm text-world-text-muted">
@@ -64,7 +64,7 @@ export function CartLineItem({
           {t("common.remove")}
         </button>
       </div>
-      <span className="font-mono text-end text-sm text-world-text max-[48rem]:text-start">
+      <span className="font-mono text-end text-sm text-world-text max-[768px]:text-start">
         {lineTotal.toLocaleString()} {currency}
       </span>
     </li>

@@ -29,7 +29,7 @@ export default function CartPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] items-start gap-8 max-[48rem]:grid-cols-1">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] items-start gap-8 max-[768px]:grid-cols-1">
           <ul className="m-0 flex list-none flex-col gap-4 p-0">
             {cart.items.map((item) => (
               <CartLineItem
