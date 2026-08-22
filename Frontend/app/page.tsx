@@ -1,9 +1,9 @@
 // app/page.tsx
 import type { Metadata } from "next";
-import { Fraunces, Space_Grotesk } from "next/font/google";
+import { Fraunces, Space_Grotesk, Amiri, Aref_Ruqaa } from "next/font/google";
 import { Navbar } from "@/components/home/Navbar";
 import { Hero } from "@/components/home/Hero";
-import { AnimeShowcase } from "@/components/home/AnimeShowcase";
+import { VerseWorlds } from "@/components/home/VerseWorlds";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -17,6 +17,21 @@ const grotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-body",
+  display: "swap",
+});
+
+/* Arabic faces for RTL worlds (heading + body), matching the poetry config */
+const amiri = Amiri({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "700"],
+  variable: "--font-arabic-body",
+  display: "swap",
+});
+
+const arefRuqaa = Aref_Ruqaa({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "700"],
+  variable: "--font-arabic-heading",
   display: "swap",
 });
 
@@ -48,12 +63,13 @@ function generateStars(count: number, seed = 7) {
   }));
 }
 
+
 export default function HomePage() {
   const stars = generateStars(80);
 
   return (
     <div
-      className={`${fraunces.variable} ${grotesk.variable} relative flex min-h-dvh flex-col overflow-x-hidden bg-[radial-gradient(120%_90%_at_50%_-12%,#14101f_0%,#0a0912_52%,#050508_100%)] font-[var(--font-body)] text-[#ece8fb]`}
+      className={`${fraunces.variable} ${grotesk.variable} ${amiri.variable} ${arefRuqaa.variable} relative flex min-h-dvh flex-col overflow-x-hidden bg-[radial-gradient(120%_90%_at_50%_-12%,#14101f_0%,#0a0912_52%,#050508_100%)] font-[var(--font-body)] text-[#ece8fb]`}
     >
       {/* ── ambient keyframes, scoped to this page, no tailwind config needed ── */}
       <style>{`
@@ -113,8 +129,8 @@ export default function HomePage() {
         {/* ── HERO: the wormhole is the thesis — one gate, five colored paths ── */}
         <Hero />
 
-        {/* ── ANIME SHOWCASE ── */}
-        <AnimeShowcase />
+        {/* ── VERSE SHOWCASE SLIDER — worlds live in components/home/verse-worlds.ts ── */}
+        <VerseWorlds />
       </main>
 
       <footer className="relative z-10 border-t border-[#8b7cf6]/15 px-[clamp(1.25rem,6vw,4rem)] pt-8 pb-12">

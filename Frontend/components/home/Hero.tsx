@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section className="relative mb-[clamp(4rem,11vw,7rem)] flex flex-col items-center text-center">
       <div
-        className="relative mb-1 grid aspect-[3/2] w-[clamp(15rem,32vw,24rem)] place-items-center"
+        className="group relative mb-1 grid aspect-[3/2] w-[clamp(15rem,32vw,24rem)] place-items-center"
         aria-hidden="true"
       >
         <Image
@@ -15,7 +15,7 @@ export function Hero() {
           width={480}
           height={480}
           priority
-          className="relative z-10 h-full w-full object-contain drop-shadow-[0_0_28px_rgba(185,168,247,0.35)]"
+          className="relative z-10 h-full w-full object-contain drop-shadow-[0_0_28px_rgba(185,168,247,0.35)] group-hover:animate-spin [animation-duration:4s]"
         />
       </div>
 
